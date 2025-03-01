@@ -52,7 +52,7 @@ var versionCmd = &cobra.Command{
 
 func initConfig() {
 	if configFile == "" {
-		dir, err := config.GetDefaultConfigDir()
+		dir, err := config.CreateConfigDirIfRequired()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%v", err)
 			os.Exit(1)
