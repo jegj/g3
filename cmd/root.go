@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 
@@ -28,7 +29,7 @@ setting up complex storage systems`,
 
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		slog.Error(err.Error())
 		os.Exit(-1)
 	}
 }
@@ -54,21 +55,14 @@ func initConfig() {
 	if configFile == "" {
 		dir, err := config.CreateConfigDirIfRequired()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%v", err)
+			slog.Error(err.Error())
 			os.Exit(1)
 		}
 		configFile = filepath.Join(dir, "config.json")
 	}
 
-	/*
-		absPath, err := path.NewAbsolutePath(configFile)
-		if err != nil {
-			panic(err)
-		}
-
-		if err := config.Conf.Load(absPath); err != nil {
-			fmt.Fprintf(os.Stderr, "%v", err)
-			os.Exit(1)
-		}
-	*/
+	if err := config.Conf.Load(configFile); err != nil {
+		slog.Error(err.Error())
+		os.Exit(1)
+	}
 }
