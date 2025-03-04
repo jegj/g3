@@ -15,19 +15,17 @@ type Config struct {
 func (cfg *Config) Load(filePath string) error {
 	_, err := os.Stat(filePath)
 	if err != nil {
+		return err
+	} else {
 		f, err := os.ReadFile(filePath)
 		if err != nil {
 			return err
 		}
-
 		err = json.Unmarshal(f, cfg)
 		if err != nil {
 			return err
 		}
-
 		return nil
-	} else {
-		return err
 	}
 }
 
@@ -37,7 +35,6 @@ func CreateConfigDirIfRequired() (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	return configDir, nil
 }
 
@@ -45,7 +42,6 @@ func createDir(dir string) error {
 	if err := os.MkdirAll(dir, 0o700); err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -55,6 +51,5 @@ func getG3ConfigDir() (dir string) {
 	} else {
 		dir = filepath.Join(os.Getenv("HOME"), ".config", "g3")
 	}
-
 	return dir
 }

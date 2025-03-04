@@ -7,12 +7,14 @@ import (
 	"path/filepath"
 
 	"github.com/jegj/g3/config"
+	"github.com/jegj/g3/logger"
 	"github.com/spf13/cobra"
 )
 
 var (
 	version    = "dev"
 	configFile string
+	debug      bool
 )
 
 var RootCmd = &cobra.Command{
@@ -35,11 +37,10 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initG3)
 	RootCmd.AddCommand(versionCmd)
-
-	RootCmd.PersistentFlags().StringVar(&configFile, "config", "", "config file (default is $HOME/.config/g3/config.json)")
-	// RootCmd.PersistentFlags().BoolVarP(&config.Flag.Debug, "debug", "", false, "debug mode")
+	RootCmd.PersistentFlags().StringVarP(&configFile, "config", "c", "", "config file (default is $HOME/.config/g3/config.json)")
+	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable debug mode")
 }
 
 var versionCmd = &cobra.Command{
@@ -51,7 +52,22 @@ var versionCmd = &cobra.Command{
 	},
 }
 
+func initG3() {
+	initLogger(debug)
+	initConfig()
+}
+
+func initLogger(debugMode bool) {
+	slog.Debug("Init logger....")
+	level := "WARN"
+	if debugMode {
+		level = "DEBUG"
+	}
+	logger.SetUpLogger(level)
+}
+
 func initConfig() {
+	slog.Debug("Init config....")
 	if configFile == "" {
 		dir, err := config.CreateConfigDirIfRequired()
 		if err != nil {
