@@ -8,6 +8,8 @@ import (
 
 var Conf Config
 
+const DEFAULT_CONFIG_FILENAME = "config.json"
+
 type Config struct {
 	GHToken string `json:"GITHUB_TOKEN"`
 }
@@ -30,26 +32,9 @@ func (cfg *Config) Load(filePath string) error {
 }
 
 func CreateConfigDirIfRequired() (string, error) {
-	configDir := getG3ConfigDir()
-	err := createDir(configDir)
-	if err != nil {
+	configDir := filepath.Join(os.Getenv("HOME"), ".config", "g3")
+	if err := os.MkdirAll(configDir, 0o700); err != nil {
 		return "", err
 	}
 	return configDir, nil
-}
-
-func createDir(dir string) error {
-	if err := os.MkdirAll(dir, 0o700); err != nil {
-		return err
-	}
-	return nil
-}
-
-func getG3ConfigDir() (dir string) {
-	if env, ok := os.LookupEnv("G3_CONFIG_DIR"); ok {
-		dir = env
-	} else {
-		dir = filepath.Join(os.Getenv("HOME"), ".config", "g3")
-	}
-	return dir
 }
