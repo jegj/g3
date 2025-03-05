@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/jegj/g3/config"
+	"github.com/jegj/g3/data"
 	"github.com/jegj/g3/logger"
 	"github.com/spf13/cobra"
 )
@@ -55,10 +56,10 @@ var versionCmd = &cobra.Command{
 func initG3() {
 	initLogger(debug)
 	initConfig()
+	initData()
 }
 
 func initLogger(debugMode bool) {
-	slog.Debug("Init logger....")
 	level := "WARN"
 	if debugMode {
 		level = "DEBUG"
@@ -74,10 +75,19 @@ func initConfig() {
 			slog.Error(err.Error())
 			os.Exit(1)
 		}
-		configFile = filepath.Join(dir, "config.json")
+		configFile = filepath.Join(dir, config.DEFAULT_CONFIG_FILENAME)
 	}
 
 	if err := config.Conf.Load(configFile); err != nil {
+		slog.Error(err.Error())
+		os.Exit(1)
+	}
+}
+
+func initData() {
+	slog.Debug("Init data....")
+	err := data.CreateDataFileIfRequired()
+	if err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)
 	}
