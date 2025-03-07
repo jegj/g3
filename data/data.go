@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 )
 
-const DEFAULT_DATA_FILENAME = "data.json"
+const DEFAULT_DATA_FILENAME = "data.db"
 
 func CreateDataFileIfRequired() error {
 	dataDir := filepath.Join(os.Getenv("HOME"), ".local", "share", "g3")
