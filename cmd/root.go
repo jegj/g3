@@ -41,7 +41,7 @@ func init() {
 	cobra.OnInitialize(initG3)
 	RootCmd.AddCommand(versionCmd)
 	RootCmd.PersistentFlags().StringVarP(&configFile, "config", "c", "", "config file (default is $HOME/.config/g3/config.json)")
-	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable debug mode")
+	RootCmd.PersistentFlags().BoolVarP(&debug, "verbose", "v", false, "Enable verbose mode")
 }
 
 var versionCmd = &cobra.Command{
