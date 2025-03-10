@@ -1,6 +1,7 @@
 package data
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 )
@@ -25,15 +26,19 @@ func CreateDataFileIfRequired() error {
 	return nil
 }
 
-/*
-func AppendEntry(filename string, gistId string, gistPath string) error {
+func AppendEntry(filename string, gists []GistEntry) error {
 	file, err := os.OpenFile(DEFAULT_DATA_FILEPATH, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	data, err := json.Marshal(entry)
+	fileGist := FileGist{Gist: gists}
+	dataEntry := DataEntry{
+		filename: fileGist,
+	}
+
+	data, err := json.Marshal(dataEntry)
 	if err != nil {
 		return err
 	}
@@ -41,4 +46,3 @@ func AppendEntry(filename string, gistId string, gistPath string) error {
 	_, err = file.Write(append(data, '\n'))
 	return err
 }
-*/
