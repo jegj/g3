@@ -2,15 +2,17 @@ package data
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 )
 
-const DEFAULT_DATA_FILENAME = "data.db"
+const DEFAULT_DATA_FILENAME = "data.jsonl"
 
 var (
 	DEFAULT_DATA_FOLDER   = filepath.Join(os.Getenv("HOME"), ".local", "share", "g3")
 	DEFAULT_DATA_FILEPATH = filepath.Join(DEFAULT_DATA_FOLDER, DEFAULT_DATA_FILENAME)
+	ERR_ENTRY_NOT_FOUND   = errors.New("entry not found")
 )
 
 func CreateDataFileIfRequired() error {
