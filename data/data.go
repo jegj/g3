@@ -47,3 +47,13 @@ func AppendEntry(filename string, gists []GistEntry) error {
 	_, err = file.Write(append(data, '\n'))
 	return err
 }
+
+func DeleteEntry(filename string) error {
+	g3Filename := fmt.Sprintf("%s.g3.json", filename)
+	g3FilePath := filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename)
+	err := os.Remove(g3FilePath)
+	if err != nil {
+		return err
+	}
+	return nil
+}
