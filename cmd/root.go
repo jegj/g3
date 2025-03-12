@@ -86,7 +86,7 @@ func initConfig() {
 
 func initData() {
 	slog.Debug("Init data....")
-	err := data.CreateDataFileIfRequired()
+	err := data.CreateDataFolderIfRequired()
 	if err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)

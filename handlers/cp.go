@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log/slog"
 
 	"github.com/jegj/g3/config"
@@ -11,6 +10,7 @@ import (
 )
 
 func Cp(filepath string) error {
+	// TODO: Works with relative and absolute paths
 	size, err := fs.GetFileSize(filepath)
 	if err != nil {
 		return err
@@ -21,7 +21,6 @@ func Cp(filepath string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("First 10 bytes:", string(content[:10]))
 
 	// TODO: encrypt data
 	filename := fs.GetFileName(filepath)
@@ -40,6 +39,7 @@ func Cp(filepath string) error {
 		ID:       gistData.Id,
 		GistPath: gistData.Url,
 	}
+	// TODO: what if the file already exists but the content change
 	err = data.AppendEntry(filename, []data.GistEntry{gistEntry})
 	if err != nil {
 		return err
