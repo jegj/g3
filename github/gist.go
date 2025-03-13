@@ -26,7 +26,7 @@ func CreateGist(description string, files map[string]map[string]string, public b
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", API_URL, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest(http.MethodPost, API_URL, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, err
 	}
@@ -58,4 +58,36 @@ func CreateGist(description string, files map[string]map[string]string, public b
 	}
 
 	return &response, nil
+}
+
+func DeleteGist(id string, token string) error {
+	client := &http.Client{}
+	url := fmt.Sprintf("%s/%s", API_URL, id)
+
+	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Accept", DEFAULT_ACCEPT_HEADER)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Set("X-GitHub-Api-Version", DEFAULT_GITHUB_VERSION)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("gist deletion failed with status code %d: %s", resp.StatusCode, string(body))
+	}
+
+	return nil
 }
