@@ -8,18 +8,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cpCmd = &cobra.Command{
-	Use:   "cp [filepath]",
-	Short: "Add a new file into your storage",
+var rmCmd = &cobra.Command{
+	Use:   "rm",
+	Short: "Delete file from your storage",
 	Args:  cobra.ExactArgs(1),
-	Long:  `Add a new file into your storage`,
-	RunE:  cp,
+	Long:  `Delete file from your storage`,
+	RunE:  rm,
 }
 
-func cp(cmd *cobra.Command, args []string) error {
-	slog.Debug("cp command...")
+func rm(cmd *cobra.Command, args []string) error {
+	slog.Debug("rm command...")
 	handler := handlers.NewG3BaseHandler(config.Conf.GHToken)
-	err := handler.Cp(args[0])
+	err := handler.Rm(args[0])
 	if err != nil {
 		return err
 	} else {
@@ -28,5 +28,5 @@ func cp(cmd *cobra.Command, args []string) error {
 }
 
 func init() {
-	RootCmd.AddCommand(cpCmd)
+	RootCmd.AddCommand(rmCmd)
 }

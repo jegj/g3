@@ -6,10 +6,9 @@ import (
 	"github.com/jegj/g3/config"
 	"github.com/jegj/g3/data"
 	"github.com/jegj/g3/fs"
-	"github.com/jegj/g3/github"
 )
 
-func Cp(filepath string) error {
+func (h *G3BaseHandler) Cp(filepath string) error {
 	// TODO: Works with relative and absolute paths
 	size, err := fs.GetFileSize(filepath)
 	if err != nil {
@@ -30,7 +29,7 @@ func Cp(filepath string) error {
 		},
 	}
 
-	gistData, err := github.CreateGist("", files, true, config.Conf.GHToken)
+	gistData, err := h.G.CreateGist("", files, true, config.Conf.GHToken)
 	if err != nil {
 		return err
 	}

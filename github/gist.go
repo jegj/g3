@@ -14,7 +14,22 @@ const (
 	DEFAULT_ACCEPT_HEADER  = "application/vnd.github+json"
 )
 
-func CreateGist(description string, files map[string]map[string]string, public bool, token string) (*GistCreateResponse, error) {
+type GistProvider interface {
+	CreateGist(description string, files map[string]map[string]string, public bool, token string) (*GistCreateResponse, error)
+	DeleteGist(id string, token string) error
+}
+
+type GistService struct {
+	token string
+}
+
+func NewGistService(token string) GistService {
+	return GistService{
+		token: token,
+	}
+}
+
+func (g GistService) CreateGist(description string, files map[string]map[string]string, public bool, token string) (*GistCreateResponse, error) {
 	client := &http.Client{}
 	requestData := GistCreateRequest{
 		Description: description,
@@ -60,7 +75,7 @@ func CreateGist(description string, files map[string]map[string]string, public b
 	return &response, nil
 }
 
-func DeleteGist(id string, token string) error {
+func (g GistService) DeleteGist(id string, token string) error {
 	client := &http.Client{}
 	url := fmt.Sprintf("%s/%s", API_URL, id)
 
