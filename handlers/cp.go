@@ -7,20 +7,23 @@ import (
 	"github.com/jegj/g3/data"
 )
 
+// TODO: Works with relative and absolute paths
+// TODO: partition file if required
+// TODO: encrypt data
+// TODO: sync more than one data file
+// TODO: what if the file already exists but the content change
+// TODO: add createdAt time for whole file
 func (h *G3BaseHandler) Cp(filepath string) error {
-	// TODO: Works with relative and absolute paths
 	size, err := h.F.GetFileSize(filepath)
 	if err != nil {
 		return err
 	}
 	slog.Info("File processed", "filename", filepath, "size", size)
-	// TODO: partition file if required
 	content, err := h.F.GetFileContent(filepath)
 	if err != nil {
 		return err
 	}
 
-	// TODO: encrypt data
 	filename := h.F.GetFileName(filepath)
 	files := map[string]map[string]string{
 		filename: {
@@ -32,12 +35,10 @@ func (h *G3BaseHandler) Cp(filepath string) error {
 	if err != nil {
 		return err
 	}
-	// TODO: sync more than one data file
 	gistEntry := data.GistEntry{
 		ID:       gistData.Id,
 		GistPath: gistData.Url,
 	}
-	// TODO: what if the file already exists but the content change
 	err = h.D.AppendEntry(filename, []data.GistEntry{gistEntry})
 	if err != nil {
 		return err
