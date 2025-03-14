@@ -37,7 +37,8 @@ func NewDatatService() DataService {
 }
 
 func (d DataService) AppendEntry(filename string, gists []GistEntry) error {
-	g3FilePath := filepath.Join(DEFAULT_DATA_FILE_FOLDER, filename)
+	g3Filename := fmt.Sprintf("%s.g3.json", filename)
+	g3FilePath := filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename)
 	file, err := os.OpenFile(g3FilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
