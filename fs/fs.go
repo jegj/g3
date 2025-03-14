@@ -5,7 +5,19 @@ import (
 	"path/filepath"
 )
 
-func GetFileSize(absFilePath string) (int64, error) {
+type FsProvider interface {
+	GetFileSize(absFilePath string) (int64, error)
+	GetFileName(absFilePath string) string
+	GetFileContent(absFilePath string) ([]byte, error)
+}
+
+type FsService struct{}
+
+func NewFsService() FsService {
+	return FsService{}
+}
+
+func (f FsService) GetFileSize(absFilePath string) (int64, error) {
 	info, err := os.Stat(absFilePath)
 	if err != nil {
 		return 0, err
@@ -14,10 +26,10 @@ func GetFileSize(absFilePath string) (int64, error) {
 	}
 }
 
-func GetFileName(absFilePath string) string {
+func (f FsService) GetFileName(absFilePath string) string {
 	return filepath.Base(absFilePath)
 }
 
-func GetFileContent(absFilePath string) ([]byte, error) {
+func (f FsService) GetFileContent(absFilePath string) ([]byte, error) {
 	return os.ReadFile(absFilePath)
 }

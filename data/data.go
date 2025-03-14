@@ -25,9 +25,19 @@ func CreateDataFolderIfRequired() error {
 	return nil
 }
 
-func AppendEntry(filename string, gists []GistEntry) error {
-	g3Filename := fmt.Sprintf("%s.g3.json", filename)
-	g3FilePath := filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename)
+type DataProvider interface {
+	AppendEntry(filename string, gists []GistEntry) error
+	DeleteEntry(filename string) error
+}
+
+type DataService struct{}
+
+func NewDatatService() DataService {
+	return DataService{}
+}
+
+func (d DataService) AppendEntry(filename string, gists []GistEntry) error {
+	g3FilePath := filepath.Join(DEFAULT_DATA_FILE_FOLDER, filename)
 	file, err := os.OpenFile(g3FilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
@@ -48,7 +58,7 @@ func AppendEntry(filename string, gists []GistEntry) error {
 	return err
 }
 
-func DeleteEntry(filename string) error {
+func (d DataService) DeleteEntry(filename string) error {
 	g3Filename := fmt.Sprintf("%s.g3.json", filename)
 	g3FilePath := filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename)
 	err := os.Remove(g3FilePath)
