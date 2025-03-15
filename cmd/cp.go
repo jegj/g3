@@ -8,6 +8,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var description string
+
 var cpCmd = &cobra.Command{
 	Use:   "cp [filepath]",
 	Short: "Add a new file into your storage",
@@ -29,4 +31,5 @@ func cp(cmd *cobra.Command, args []string) error {
 
 func init() {
 	RootCmd.AddCommand(cpCmd)
+	cpCmd.PersistentFlags().StringVarP(&description, "description", "d", "", "A brief description of your file")
 }

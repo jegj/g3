@@ -13,7 +13,7 @@ import (
 // TODO: sync more than one data file
 // TODO: what if the file already exists but the content change
 // TODO: add createdAt time for whole file
-func (h *G3BaseHandler) Cp(filepath string) error {
+func (h *G3BaseHandler) Cp(filepath string, description string) error {
 	size, err := h.F.GetFileSize(filepath)
 	if err != nil {
 		return err
@@ -31,7 +31,7 @@ func (h *G3BaseHandler) Cp(filepath string) error {
 		},
 	}
 
-	gistData, err := h.G.CreateGist("", files, true, config.Conf.GHToken)
+	gistData, err := h.G.CreateGist(description, files, true, config.Conf.GHToken)
 	if err != nil {
 		return err
 	}
