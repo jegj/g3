@@ -21,7 +21,7 @@ var cpCmd = &cobra.Command{
 func cp(cmd *cobra.Command, args []string) error {
 	slog.Debug("cp command...")
 	handler := handlers.NewG3BaseHandler(config.Conf.GHToken)
-	err := handler.Cp(args[0])
+	err := handler.Cp(args[0], description)
 	if err != nil {
 		return err
 	} else {
