@@ -3,6 +3,8 @@ package cmd
 import (
 	"log/slog"
 
+	"github.com/jegj/g3/config"
+	"github.com/jegj/g3/handlers"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +18,13 @@ var lsCmd = &cobra.Command{
 
 func ls(cmd *cobra.Command, args []string) error {
 	slog.Info("ls command...")
-	return nil
+	handler := handlers.NewG3BaseHandler(config.Conf.GHToken)
+	err := handler.Ls()
+	if err != nil {
+		return err
+	} else {
+		return nil
+	}
 }
 
 func init() {

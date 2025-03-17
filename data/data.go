@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const (
@@ -28,6 +29,7 @@ func CreateDataFolderIfRequired() error {
 type DataProvider interface {
 	AppendEntry(filename string, gists []GistEntry) error
 	DeleteEntry(filename string) error
+	GetEntries() ([]string, error)
 }
 
 type DataService struct{}
@@ -67,4 +69,24 @@ func (d DataService) DeleteEntry(filename string) error {
 		return err
 	}
 	return nil
+}
+
+func (d DataService) GetEntries() ([]string, error) {
+	files, err := os.ReadDir(DEFAULT_DATA_FILE_FOLDER)
+	if err != nil {
+		return []string{}, err
+	}
+
+	if len(files) == 0 {
+		return []string{}, nil
+	}
+
+	filenames := make([]string, 0, len(files))
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+		filenames = append(filenames, strings.ReplaceAll(file.Name(), ".g3.json", ""))
+	}
+	return filenames, nil
 }
