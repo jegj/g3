@@ -17,7 +17,7 @@ var lsCmd = &cobra.Command{
 }
 
 func ls(cmd *cobra.Command, args []string) error {
-	slog.Info("ls command...")
+	slog.Debug("ls command...")
 	handler := handlers.NewG3BaseHandler(config.Conf.GHToken)
 	err := handler.Ls()
 	if err != nil {
