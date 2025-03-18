@@ -1,14 +1,10 @@
 package handlers
 
-import "fmt"
-
-func (g *G3BaseHandler) Ls() error {
+// TODO: FS and DATA similiar behavior
+func (g *G3BaseHandler) Ls() ([]string, error) {
 	files, err := g.D.GetEntries()
 	if err != nil {
-		return err
+		return []string{}, err
 	}
-	for _, file := range files {
-		fmt.Printf("%s\n", file)
-	}
-	return nil
+	return files, nil
 }

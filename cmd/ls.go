@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log/slog"
 
 	"github.com/jegj/g3/config"
@@ -19,10 +20,13 @@ var lsCmd = &cobra.Command{
 func ls(cmd *cobra.Command, args []string) error {
 	slog.Debug("ls command...")
 	handler := handlers.NewG3BaseHandler(config.Conf.GHToken)
-	err := handler.Ls()
+	files, err := handler.Ls()
 	if err != nil {
 		return err
 	} else {
+		for _, file := range files {
+			fmt.Printf("%s\n", file)
+		}
 		return nil
 	}
 }
