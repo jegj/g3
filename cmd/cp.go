@@ -14,8 +14,20 @@ var cpCmd = &cobra.Command{
 	Use:   "cp [filepath]",
 	Short: "Add a new file into your storage",
 	Args:  cobra.ExactArgs(1),
-	Long:  `Add a new file into your storage`,
-	RunE:  cp,
+	Long: `The "cp" command allows you to add a new file to your storage.
+
+You must provide the file path as an argument, and the command will upload
+the specified file to your storage. If a file with the same name already exists, 
+it may be overwritten.
+
+Examples:
+  # Add a file to storage
+  g3 cp /path/to/file.txt
+
+  # Add a file using relative path
+  g3 cp ./example.json
+`,
+	RunE: cp,
 }
 
 func cp(cmd *cobra.Command, args []string) error {
