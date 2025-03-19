@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/jegj/g3/config"
-	"github.com/jegj/g3/data"
+	"github.com/jegj/g3/fsdata"
 	"github.com/jegj/g3/logger"
 	"github.com/spf13/cobra"
 )
@@ -87,7 +87,7 @@ func initConfig() {
 
 func initData() {
 	slog.Debug("Init data....")
-	err := data.CreateDataFolderIfRequired()
+	err := fsdata.CreateDataFolderIfRequired()
 	if err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)

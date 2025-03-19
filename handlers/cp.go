@@ -4,7 +4,7 @@ import (
 	"log/slog"
 
 	"github.com/jegj/g3/config"
-	"github.com/jegj/g3/data"
+	"github.com/jegj/g3/fsdata"
 )
 
 // TODO: Works with relative and absolute paths
@@ -14,17 +14,17 @@ import (
 // TODO: what if the file already exists but the content change
 // TODO: add createdAt time for whole file
 func (h *G3BaseHandler) Cp(filepath string, description string) error {
-	size, err := h.F.GetFileSize(filepath)
+	size, err := h.D.GetFileSize(filepath)
 	if err != nil {
 		return err
 	}
 	slog.Info("File processed", "filename", filepath, "size", size)
-	content, err := h.F.GetFileContent(filepath)
+	content, err := h.D.GetFileContent(filepath)
 	if err != nil {
 		return err
 	}
 
-	filename := h.F.GetFileName(filepath)
+	filename := h.D.GetFileName(filepath)
 	files := map[string]map[string]string{
 		filename: {
 			"content": string(content),
@@ -35,11 +35,11 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 	if err != nil {
 		return err
 	}
-	gistEntry := data.GistEntry{
+	gistEntry := fsdata.GistEntry{
 		ID:       gistData.Id,
 		GistPath: gistData.Url,
 	}
-	err = h.D.AppendEntry(filename, []data.GistEntry{gistEntry})
+	err = h.D.AppendEntry(filename, []fsdata.GistEntry{gistEntry})
 	if err != nil {
 		return err
 	}

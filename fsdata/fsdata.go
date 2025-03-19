@@ -1,4 +1,4 @@
-package data
+package fsdata
 
 import (
 	"encoding/json"
@@ -30,15 +30,40 @@ type DataProvider interface {
 	AppendEntry(filename string, gists []GistEntry) error
 	DeleteEntry(filename string) error
 	GetEntries() ([]string, error)
+	GetFileSize(absFilePath string) (int64, error)
+	GetFileName(absFilePath string) string
+	GetFileContent(absFilePath string) ([]byte, error)
 }
 
-type DataService struct{}
+type FSDataService struct{}
 
-func NewDatatService() DataService {
-	return DataService{}
+func NewDatatService() FSDataService {
+	return FSDataService{}
 }
 
-func (d DataService) AppendEntry(filename string, gists []GistEntry) error {
+func GetG3Filepath(filename string) string {
+	g3Filename := fmt.Sprintf("%s.g3.json", filename)
+	return filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename)
+}
+
+func (d FSDataService) GetFileSize(absFilePath string) (int64, error) {
+	info, err := os.Stat(absFilePath)
+	if err != nil {
+		return 0, err
+	} else {
+		return info.Size(), nil
+	}
+}
+
+func (d FSDataService) GetFileName(absFilePath string) string {
+	return filepath.Base(absFilePath)
+}
+
+func (d FSDataService) GetFileContent(absFilePath string) ([]byte, error) {
+	return os.ReadFile(absFilePath)
+}
+
+func (d FSDataService) AppendEntry(filename string, gists []GistEntry) error {
 	g3Filename := fmt.Sprintf("%s.g3.json", filename)
 	g3FilePath := filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename)
 	file, err := os.OpenFile(g3FilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
@@ -61,7 +86,7 @@ func (d DataService) AppendEntry(filename string, gists []GistEntry) error {
 	return err
 }
 
-func (d DataService) DeleteEntry(filename string) error {
+func (d FSDataService) DeleteEntry(filename string) error {
 	g3Filename := fmt.Sprintf("%s.g3.json", filename)
 	g3FilePath := filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename)
 	err := os.Remove(g3FilePath)
@@ -71,7 +96,7 @@ func (d DataService) DeleteEntry(filename string) error {
 	return nil
 }
 
-func (d DataService) GetEntries() ([]string, error) {
+func (d FSDataService) GetEntries() ([]string, error) {
 	files, err := os.ReadDir(DEFAULT_DATA_FILE_FOLDER)
 	if err != nil {
 		return []string{}, err

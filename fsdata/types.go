@@ -1,4 +1,4 @@
-package data
+package fsdata
 
 type DataEntry map[string]FileGist
 
