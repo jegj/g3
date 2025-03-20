@@ -3,7 +3,6 @@ package fsdata
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -41,11 +40,6 @@ func NewDatatService() FSDataService {
 	return FSDataService{}
 }
 
-func GetG3Filepath(filename string) string {
-	g3Filename := fmt.Sprintf("%s.g3.json", filename)
-	return filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename)
-}
-
 func (d FSDataService) GetFileSize(absFilePath string) (int64, error) {
 	info, err := os.Stat(absFilePath)
 	if err != nil {
@@ -64,9 +58,7 @@ func (d FSDataService) GetFileContent(absFilePath string) ([]byte, error) {
 }
 
 func (d FSDataService) AppendEntry(filename string, gists []GistEntry) error {
-	g3Filename := fmt.Sprintf("%s.g3.json", filename)
-	g3FilePath := filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename)
-	file, err := os.OpenFile(g3FilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
@@ -87,9 +79,7 @@ func (d FSDataService) AppendEntry(filename string, gists []GistEntry) error {
 }
 
 func (d FSDataService) DeleteEntry(filename string) error {
-	g3Filename := fmt.Sprintf("%s.g3.json", filename)
-	g3FilePath := filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename)
-	err := os.Remove(g3FilePath)
+	err := os.Remove(filename)
 	if err != nil {
 		return err
 	}
