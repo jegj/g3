@@ -24,6 +24,7 @@ Usage:
 
 Available Commands:
   cp          Add a new file into your storage
+  get         Get a file into your storage
   help        Help about any command
   ls          Show all the files in your storage
   rm          Delete file from your storage
