@@ -7,31 +7,60 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestGetG3Filepath tests GetG3Filepath using a table-driven approach
 func TestGetG3Filepath(t *testing.T) {
-	// Define test cases
 	testCases := []struct {
-		name     string // Test case name
-		input    string // Input filename
-		expected string // Expected output path
+		name        string // Test case name
+		input       string // Input filename
+		expected    string // Expected output path (if valid)
+		expectError bool   // Whether an error is expected
 	}{
 		{
-			name:     "Normal filename",
-			input:    "example",
-			expected: filepath.Join(DEFAULT_DATA_FILE_FOLDER, "example.g3.json"),
+			name:        "Empty filename",
+			input:       "",
+			expected:    "",
+			expectError: true,
 		},
 		{
-			name:     "Filename with extension",
-			input:    "document.txt",
-			expected: filepath.Join(DEFAULT_DATA_FILE_FOLDER, "document.txt.g3.json"),
+			name:        "Filename with only spaces",
+			input:       "   ",
+			expected:    "",
+			expectError: true,
+		},
+		{
+			name:        "Filename with invalid characters",
+			input:       "invalid/name",
+			expected:    "",
+			expectError: true,
+		},
+		{
+			name:        "Filename with special characters",
+			input:       "file:name",
+			expected:    "",
+			expectError: true,
+		},
+		{
+			name:        "Normal filename",
+			input:       "example",
+			expected:    filepath.Join(DEFAULT_DATA_FILE_FOLDER, "example.g3.json"),
+			expectError: false,
+		},
+		{
+			name:        "Filename with extension",
+			input:       "document.txt",
+			expected:    filepath.Join(DEFAULT_DATA_FILE_FOLDER, "document.txt.g3.json"),
+			expectError: false,
 		},
 	}
 
-	// Iterate through test cases
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			actual := GetG3Filepath(tc.input)
-			assert.Equal(t, tc.expected, actual)
+			actual, err := GetG3Filepath(tc.input)
+			if tc.expectError {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tc.expected, actual)
+			}
 		})
 	}
 }
