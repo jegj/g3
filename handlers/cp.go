@@ -39,7 +39,11 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 		ID:       gistData.Id,
 		GistPath: gistData.Url,
 	}
-	g3filepath := fsdata.GetG3Filepath(filename)
+	g3filepath, err := fsdata.GetG3Filepath(filename)
+	if err != nil {
+		return nil
+	}
+
 	err = h.D.AppendEntry(g3filepath, []fsdata.GistEntry{gistEntry})
 	if err != nil {
 		return err

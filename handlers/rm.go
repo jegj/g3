@@ -11,7 +11,10 @@ import (
 // TODO: Handler err when one call to github api fails and the other not
 // TODO: Parallel delete calls when the file contains more than one gist
 func (g *G3BaseHandler) Rm(filename string) error {
-	g3filepath := fsdata.GetG3Filepath(filename)
+	g3filepath, err := fsdata.GetG3Filepath(filename)
+	if err != nil {
+		return err
+	}
 	content, err := g.D.GetFileContent(g3filepath)
 	if err != nil {
 		return err
