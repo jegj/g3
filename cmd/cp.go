@@ -1,7 +1,10 @@
 package cmd
 
 import (
+	"errors"
 	"log/slog"
+	"os"
+	"path/filepath"
 
 	"github.com/jegj/g3/config"
 	"github.com/jegj/g3/handlers"
@@ -10,10 +13,31 @@ import (
 
 var description string
 
+func fileExists(path string) bool {
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		return false
+	}
+
+	info, err := os.Stat(absPath)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return err == nil || info != nil
+}
+
 var cpCmd = &cobra.Command{
-	Use:   "cp [filepath]",
+	Use:   "cp [file]",
 	Short: "Add a new file into your storage",
-	Args:  cobra.ExactArgs(1),
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) < 1 {
+			return errors.New("error: missing required argument [file]")
+		}
+		if !fileExists(args[0]) {
+			return errors.New("error: file doesn't exists")
+		}
+		return nil
+	},
 	Long: `The "cp" command allows you to add a new file to your storage.
 
 You must provide the file path as an argument, and the command will upload

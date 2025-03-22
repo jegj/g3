@@ -32,8 +32,9 @@ setting up complex storage systems`,
 
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		slog.Error(err.Error())
-		os.Exit(-1)
+		slog.Debug(err.Error())
+		fmt.Printf("%s\n", err.Error())
+		os.Exit(1)
 	}
 }
 
