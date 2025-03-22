@@ -7,7 +7,6 @@ import (
 	"github.com/jegj/g3/fsdata"
 )
 
-// TODO: Works with relative and absolute paths
 // TODO: partition file if required
 // TODO: encrypt data
 // TODO: sync more than one data file
