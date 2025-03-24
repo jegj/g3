@@ -15,7 +15,7 @@ const (
 )
 
 type GistProvider interface {
-	CreateGist(description string, files map[string]map[string]string, public bool, token string) (*GistCreateResponse, error)
+	CreateGist(description string, files map[string]map[string]string, public bool, token string) (*GistResponse, error)
 	DeleteGist(id string, token string) error
 }
 
@@ -29,7 +29,7 @@ func NewGistService(token string) GistService {
 	}
 }
 
-func (g GistService) CreateGist(description string, files map[string]map[string]string, public bool, token string) (*GistCreateResponse, error) {
+func (g GistService) CreateGist(description string, files map[string]map[string]string, public bool, token string) (*GistResponse, error) {
 	client := &http.Client{}
 	requestData := GistCreateRequest{
 		Description: description,
@@ -66,7 +66,7 @@ func (g GistService) CreateGist(description string, files map[string]map[string]
 		return nil, fmt.Errorf("gist creation failed with status code %d: %s", resp.StatusCode, string(body))
 	}
 
-	var response GistCreateResponse
+	var response GistResponse
 	err = json.Unmarshal(body, &response)
 	if err != nil {
 		return nil, err
@@ -76,6 +76,38 @@ func (g GistService) CreateGist(description string, files map[string]map[string]
 }
 
 func (g GistService) DeleteGist(id string, token string) error {
+	client := &http.Client{}
+	url := fmt.Sprintf("%s/%s", API_URL, id)
+
+	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Accept", DEFAULT_ACCEPT_HEADER)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Set("X-GitHub-Api-Version", DEFAULT_GITHUB_VERSION)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("gist deletion failed with status code %d: %s", resp.StatusCode, string(body))
+	}
+
+	return nil
+}
+
+func (g GistService) GetGist(id string, token string) error {
 	client := &http.Client{}
 	url := fmt.Sprintf("%s/%s", API_URL, id)
 
