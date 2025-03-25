@@ -3,28 +3,14 @@ package cmd
 import (
 	"errors"
 	"log/slog"
-	"os"
-	"path/filepath"
 
 	"github.com/jegj/g3/config"
 	"github.com/jegj/g3/handlers"
+	"github.com/jegj/g3/validator"
 	"github.com/spf13/cobra"
 )
 
 var description string
-
-func fileExists(path string) bool {
-	absPath, err := filepath.Abs(path)
-	if err != nil {
-		return false
-	}
-
-	info, err := os.Stat(absPath)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return err == nil || info != nil
-}
 
 var cpCmd = &cobra.Command{
 	Use:   "cp [file]",
@@ -33,7 +19,7 @@ var cpCmd = &cobra.Command{
 		if len(args) < 1 {
 			return errors.New("error: missing required argument [file]")
 		}
-		if !fileExists(args[0]) {
+		if !validator.FileExists(args[0]) {
 			return errors.New("error: file doesn't exists")
 		}
 		return nil
