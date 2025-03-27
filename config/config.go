@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 )
@@ -12,6 +13,7 @@ const DEFAULT_CONFIG_FILENAME = "config.json"
 
 type Config struct {
 	GHToken string `json:"GITHUB_TOKEN"`
+	AESKey  []byte `json:"AES_KEY"`
 }
 
 func (cfg *Config) Load(filePath string) error {
@@ -29,6 +31,16 @@ func (cfg *Config) Load(filePath string) error {
 		}
 		return nil
 	}
+}
+
+func (cfg *Config) Validate() error {
+	if cfg.GHToken == "" {
+		return errors.New("GITHUB_TOKEN config property is required")
+	}
+	if len(cfg.AESKey) == 0 {
+		return errors.New("AES_KEY config property is required")
+	}
+	return nil
 }
 
 func CreateConfigDirIfRequired() (string, error) {
