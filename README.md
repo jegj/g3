@@ -10,6 +10,21 @@ setting up complex storage systems.
 
 ## Configuration
 
+```json
+{
+  "GITHUB_TOKEN": "github_22faketoken_asieowiafhjls2basdjnnmazxwa",
+  "AES_KEY": "A37F1C5D92E46B88F021BD6734FAC95E127A45EF983DBC7609DD4F602A9183BF"
+}
+```
+
+- `GITHUB_TOKEN`: A personal access token (PAT) used to authenticate requests
+to the GitHub API. This token should have the necessary permissions to
+read and write gists.
+
+- `AES_KEY`: A 32-byte encryption key used for AES-256 encryption and
+decryption of stored data. This key ensures that sensitive information
+remains secure. Keep this key private and do not share it.
+
 ## Usage
 
 ```sh
