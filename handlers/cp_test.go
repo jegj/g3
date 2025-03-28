@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TODO: Add config keys
 func TestCp_ErrorGetFileSize(t *testing.T) {
 	mockGistProvider := new(github.MockGistProvider)
 	mockDataProvider := new(fsdata.MockDataProvider)

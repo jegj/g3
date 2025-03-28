@@ -3,12 +3,11 @@ package handlers
 import (
 	"log/slog"
 
-	"github.com/jegj/g3/config"
+	"github.com/jegj/g3/crypto"
 	"github.com/jegj/g3/fsdata"
 )
 
 // TODO: partition file if required
-// TODO: encrypt data
 // TODO: sync more than one data file
 // TODO: what if the file already exists but the content change
 // TODO: add createdAt time for whole file
@@ -23,14 +22,19 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 		return err
 	}
 
+	encryptedContent, err := crypto.EncryptAESGCM(content, h.aeskey)
+	if err != nil {
+		return err
+	}
+
 	filename := h.D.GetFileName(filepath)
 	files := map[string]map[string]string{
 		filename: {
-			"content": string(content),
+			"content": string(encryptedContent),
 		},
 	}
 
-	gistData, err := h.G.CreateGist(description, files, true, config.Conf.GHToken)
+	gistData, err := h.G.CreateGist(description, files, true, h.ghtoken)
 	if err != nil {
 		return err
 	}

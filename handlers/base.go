@@ -6,13 +6,17 @@ import (
 )
 
 type G3BaseHandler struct {
-	G github.GistProvider
-	D fsdata.DataProvider
+	ghtoken string
+	aeskey  []byte
+	G       github.GistProvider
+	D       fsdata.DataProvider
 }
 
-func NewG3BaseHandler(token string) G3BaseHandler {
+func NewG3BaseHandler(token string, aeskey []byte) G3BaseHandler {
 	return G3BaseHandler{
-		G: github.NewGistService(token),
-		D: fsdata.NewDatatService(),
+		ghtoken: token,
+		aeskey:  aeskey,
+		G:       github.NewGistService(token),
+		D:       fsdata.NewDatatService(),
 	}
 }

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log/slog"
 
-	"github.com/jegj/g3/config"
 	"github.com/jegj/g3/fsdata"
 )
 
@@ -29,7 +28,7 @@ func (g *G3BaseHandler) Rm(filename string) error {
 	for filename, fileGist := range entry {
 		slog.Debug("Deleting file....", "filename", filename)
 		for _, gist := range fileGist.Gist {
-			err := g.G.DeleteGist(gist.ID, config.Conf.GHToken)
+			err := g.G.DeleteGist(gist.ID, g.ghtoken)
 			if err != nil {
 				return err
 			}

@@ -84,6 +84,11 @@ func initConfig() {
 		slog.Error(err.Error())
 		os.Exit(1)
 	}
+
+	if err := config.Conf.Validate(); err != nil {
+		slog.Error(err.Error())
+		os.Exit(1)
+	}
 }
 
 func initData() {

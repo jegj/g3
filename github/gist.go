@@ -19,14 +19,10 @@ type GistProvider interface {
 	DeleteGist(id string, token string) error
 }
 
-type GistService struct {
-	token string
-}
+type GistService struct{}
 
 func NewGistService(token string) GistService {
-	return GistService{
-		token: token,
-	}
+	return GistService{}
 }
 
 func (g GistService) CreateGist(description string, files map[string]map[string]string, public bool, token string) (*GistResponse, error) {
