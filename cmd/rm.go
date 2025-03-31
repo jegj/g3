@@ -6,7 +6,6 @@ import (
 
 	"github.com/jegj/g3/config"
 	"github.com/jegj/g3/handlers"
-	"github.com/jegj/g3/validator"
 	"github.com/spf13/cobra"
 )
 
@@ -16,9 +15,6 @@ var rmCmd = &cobra.Command{
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			return errors.New("error: missing required argument [file]")
-		}
-		if !validator.FileExists(args[0]) {
-			return errors.New("error: file doesn't exists")
 		}
 		return nil
 	},
