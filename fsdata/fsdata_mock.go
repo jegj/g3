@@ -28,11 +28,6 @@ func (m *MockDataProvider) GetFileSize(absFilePath string) (int64, error) {
 	return args.Get(0).(int64), args.Error(1)
 }
 
-func (m *MockDataProvider) GetFileName(absFilePath string) string {
-	args := m.Called(absFilePath)
-	return args.Get(0).(string)
-}
-
 func (m *MockDataProvider) GetFileContent(absFilePath string) ([]byte, error) {
 	args := m.Called(absFilePath)
 	return args.Get(0).([]byte), args.Error(1)

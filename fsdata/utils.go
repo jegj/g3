@@ -22,3 +22,7 @@ func GetG3Filepath(filename string) (string, error) {
 	g3Filename := fmt.Sprintf("%s.g3.json", filename)
 	return filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename), nil
 }
+
+func GetFileName(absFilePath string) string {
+	return filepath.Base(absFilePath)
+}

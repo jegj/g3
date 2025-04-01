@@ -16,6 +16,7 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 	if err != nil {
 		return err
 	}
+	// TODO: REMOVE THIS LATER
 	slog.Info("File processed", "filename", filepath, "size", size)
 	content, err := h.D.GetFileContent(filepath)
 	if err != nil {
@@ -27,7 +28,7 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 		return err
 	}
 
-	filename := h.D.GetFileName(filepath)
+	filename := fsdata.GetFileName(filepath)
 	files := map[string]map[string]string{
 		filename: {
 			"content": string(encryptedContent),

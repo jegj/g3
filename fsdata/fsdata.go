@@ -30,7 +30,6 @@ type DataProvider interface {
 	DeleteEntry(filename string) error
 	GetEntries() ([]string, error)
 	GetFileSize(absFilePath string) (int64, error)
-	GetFileName(absFilePath string) string
 	GetFileContent(absFilePath string) ([]byte, error)
 }
 
@@ -47,10 +46,6 @@ func (d FSDataService) GetFileSize(absFilePath string) (int64, error) {
 	} else {
 		return info.Size(), nil
 	}
-}
-
-func (d FSDataService) GetFileName(absFilePath string) string {
-	return filepath.Base(absFilePath)
 }
 
 func (d FSDataService) GetFileContent(absFilePath string) ([]byte, error) {
