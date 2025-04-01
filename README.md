@@ -42,7 +42,7 @@ Available Commands:
   get         Get a file from your storage
   help        Help about any command
   ls          Show all the files in your storage
-  rm          Delete file from your storage
+  rm          Delete the file from your storage
   sync        Sync folder into your storage
   version     Print the version number
 
