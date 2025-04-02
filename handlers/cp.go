@@ -12,23 +12,37 @@ import (
 // TODO: what if the file already exists but the content change
 // TODO: add createdAt time for whole file
 func (h *G3BaseHandler) Cp(filepath string, description string) error {
+	filename := fsdata.GetFileName(filepath)
+
 	size, err := h.D.GetFileSize(filepath)
 	if err != nil {
 		return err
 	}
 	// TODO: REMOVE THIS LATER
 	slog.Info("File processed", "filename", filepath, "size", size)
+
 	content, err := h.D.GetFileContent(filepath)
 	if err != nil {
 		return err
 	}
+
+	g3filepath, err := fsdata.GetG3Filepath(filename)
+	if err != nil {
+		return err
+	}
+
+	/*
+		dataentry, err := h.D.GetEntry(g3filepath)
+		if err != nil {
+			return err
+		}
+	*/
 
 	encryptedContent, err := crypto.EncryptAESGCM(content, h.aeskey)
 	if err != nil {
 		return err
 	}
 
-	filename := fsdata.GetFileName(filepath)
 	files := map[string]map[string]string{
 		filename: {
 			"content": string(encryptedContent),
@@ -42,10 +56,6 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 	gistEntry := fsdata.GistEntry{
 		ID:       gistData.Id,
 		GistPath: gistData.Url,
-	}
-	g3filepath, err := fsdata.GetG3Filepath(filename)
-	if err != nil {
-		return nil
 	}
 
 	err = h.D.AppendEntry(g3filepath, []fsdata.GistEntry{gistEntry})

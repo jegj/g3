@@ -18,19 +18,13 @@ var (
 	ErrEntryNotFound         = errors.New("entry not found")
 )
 
-func CreateDataFolderIfRequired() error {
-	if err := os.MkdirAll(DEFAULT_DATA_FILE_FOLDER, 0o700); err != nil {
-		return err
-	}
-	return nil
-}
-
 type DataProvider interface {
 	AppendEntry(filename string, gists []GistEntry) error
 	DeleteEntry(filename string) error
 	GetEntries() ([]string, error)
 	GetFileSize(absFilePath string) (int64, error)
 	GetFileContent(absFilePath string) ([]byte, error)
+	GetEntry(filename string) (DataEntry, error)
 }
 
 type FSDataService struct{}
@@ -53,7 +47,7 @@ func (d FSDataService) GetFileContent(absFilePath string) ([]byte, error) {
 }
 
 func (d FSDataService) AppendEntry(filename string, gists []GistEntry) error {
-	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(filename, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
@@ -81,6 +75,7 @@ func (d FSDataService) DeleteEntry(filename string) error {
 	return nil
 }
 
+// FIXME: Only valid file. e.g .setting.swp or hidden files
 func (d FSDataService) GetEntries() ([]string, error) {
 	files, err := os.ReadDir(DEFAULT_DATA_FILE_FOLDER)
 	if err != nil {
@@ -99,4 +94,18 @@ func (d FSDataService) GetEntries() ([]string, error) {
 		filenames = append(filenames, strings.ReplaceAll(file.Name(), ".g3.json", ""))
 	}
 	return filenames, nil
+}
+
+func (d FSDataService) GetEntry(filename string) (DataEntry, error) {
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+	dataEntry := DataEntry{}
+	err = json.Unmarshal(data, &dataEntry)
+	if err != nil {
+		return nil, err
+	}
+
+	return dataEntry, nil
 }

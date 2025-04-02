@@ -32,3 +32,8 @@ func (m *MockDataProvider) GetFileContent(absFilePath string) ([]byte, error) {
 	args := m.Called(absFilePath)
 	return args.Get(0).([]byte), args.Error(1)
 }
+
+func (m *MockDataProvider) GetEntry(filename string) (DataEntry, error) {
+	args := m.Called(filename)
+	return args.Get(0).(DataEntry), args.Error(1)
+}

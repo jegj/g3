@@ -3,6 +3,7 @@ package fsdata
 import (
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -21,6 +22,13 @@ func GetG3Filepath(filename string) (string, error) {
 
 	g3Filename := fmt.Sprintf("%s.g3.json", filename)
 	return filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename), nil
+}
+
+func CreateDataFolderIfRequired() error {
+	if err := os.MkdirAll(DEFAULT_DATA_FILE_FOLDER, 0o700); err != nil {
+		return err
+	}
+	return nil
 }
 
 func GetFileName(absFilePath string) string {
