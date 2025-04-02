@@ -25,6 +25,7 @@ type DataProvider interface {
 	GetFileSize(absFilePath string) (int64, error)
 	GetFileContent(absFilePath string) ([]byte, error)
 	GetEntry(filename string) (DataEntry, error)
+	HasEntry(filename string) bool
 }
 
 type FSDataService struct{}
@@ -96,8 +97,8 @@ func (d FSDataService) GetEntries() ([]string, error) {
 	return filenames, nil
 }
 
-func (d FSDataService) GetEntry(filename string) (DataEntry, error) {
-	data, err := os.ReadFile(filename)
+func (d FSDataService) GetEntry(g3filepath string) (DataEntry, error) {
+	data, err := os.ReadFile(g3filepath)
 	if err != nil {
 		return nil, err
 	}
@@ -108,4 +109,9 @@ func (d FSDataService) GetEntry(filename string) (DataEntry, error) {
 	}
 
 	return dataEntry, nil
+}
+
+func (d FSDataService) HasEntry(g3filepath string) bool {
+	_, err := os.Stat(g3filepath)
+	return !os.IsNotExist(err)
 }

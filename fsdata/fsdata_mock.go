@@ -37,3 +37,8 @@ func (m *MockDataProvider) GetEntry(filename string) (DataEntry, error) {
 	args := m.Called(filename)
 	return args.Get(0).(DataEntry), args.Error(1)
 }
+
+func (m *MockDataProvider) HasEntry(filename string) bool {
+	args := m.Called(filename)
+	return args.Get(0).(bool)
+}
