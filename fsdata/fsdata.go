@@ -47,12 +47,16 @@ func (d FSDataService) GetFileContent(absFilePath string) ([]byte, error) {
 	return os.ReadFile(absFilePath)
 }
 
-func (d FSDataService) AppendEntry(filename string, gists []GistEntry) error {
+func (d FSDataService) AppendEntry(filename string, gists []GistEntry) (err error) {
 	file, err := os.OpenFile(filename, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		if cerr := file.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
+	}()
 
 	fileGist := FileGist{Gist: gists}
 	dataEntry := DataEntry{
