@@ -4,15 +4,6 @@ import (
 	"time"
 )
 
-type FileGist struct {
-	Filename  string `json:"filename"`
-	Type      string `json:"type"`
-	Size      int    `json:"size"`
-	RawUrl    string `json:"raw_url"`
-	Truncated bool   `json:"truncated"`
-	Content   string `json:"content"`
-}
-
 type GistResponse struct {
 	Url       string              `json:"url"`
 	Id        string              `json:"id"`
@@ -21,6 +12,15 @@ type GistResponse struct {
 	CreatedAt time.Time           `json:"created_at"`
 	UpdatedAt time.Time           `json:"updated_at"`
 	Files     map[string]FileGist `json:"files"`
+}
+
+type FileGist struct {
+	Filename  string `json:"filename"`
+	Type      string `json:"type"`
+	Size      int    `json:"size"`
+	RawUrl    string `json:"raw_url"`
+	Truncated bool   `json:"truncated"`
+	Content   string `json:"content"`
 }
 
 type GistCreateRequest struct {
