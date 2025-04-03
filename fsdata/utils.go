@@ -24,7 +24,7 @@ func GetG3Filepath(filename string) (string, error) {
 	return filepath.Join(DEFAULT_DATA_FILE_FOLDER, g3Filename), nil
 }
 
-func CreateDataFolderIfRequired() error {
+func CreateG3DataFolderIfRequired() error {
 	if err := os.MkdirAll(DEFAULT_DATA_FILE_FOLDER, 0o700); err != nil {
 		return err
 	}

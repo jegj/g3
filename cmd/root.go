@@ -93,7 +93,7 @@ func initConfig() {
 
 func initData() {
 	slog.Debug("Init data....")
-	err := fsdata.CreateDataFolderIfRequired()
+	err := fsdata.CreateG3DataFolderIfRequired()
 	if err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)
