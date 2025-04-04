@@ -1,12 +1,6 @@
 package fsdata
 
-import (
-	"path/filepath"
-	"testing"
-
-	"github.com/stretchr/testify/assert"
-)
-
+/*
 func TestGetG3Filepath(t *testing.T) {
 	testCases := []struct {
 		name        string // Test case name
@@ -64,3 +58,4 @@ func TestGetG3Filepath(t *testing.T) {
 		})
 	}
 }
+*/

@@ -3,6 +3,7 @@ package fsdata
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -28,6 +29,7 @@ type DataProvider interface {
 	GetFileContent(absFilePath string) ([]byte, error)
 	GetEntry(filename string) (DataEntry, error)
 	HasEntry(filename string) bool
+	GetG3Filepath(filename string) (string, error)
 }
 
 type FSDataService struct {
@@ -124,4 +126,20 @@ func (d FSDataService) GetEntry(g3filepath string) (DataEntry, error) {
 func (d FSDataService) HasEntry(g3filepath string) bool {
 	_, err := os.Stat(g3filepath)
 	return !os.IsNotExist(err)
+}
+
+func (d FSDataService) GetG3Filepath(filename string) (string, error) {
+	if strings.TrimSpace(filename) == "" {
+		return "", errors.New("filename cannot be empty or only whitespace")
+	}
+
+	invalidChars := []string{"/", "\\", ":", "*", "?", "\"", "<", ">", "|"}
+	for _, char := range invalidChars {
+		if strings.Contains(filename, char) {
+			return "", fmt.Errorf("filename contains an invalid character: %q", char)
+		}
+	}
+
+	g3Filename := fmt.Sprintf("%s.g3.json", filename)
+	return filepath.Join(d.cfg.DataFolder, g3Filename), nil
 }

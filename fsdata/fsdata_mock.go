@@ -10,12 +10,12 @@ type MockDataProvider struct {
 
 func (m *MockDataProvider) AppendEntry(filename string, gists []GistEntry) error {
 	args := m.Called(filename, gists)
-	return args.Error(1)
+	return args.Error(0)
 }
 
 func (m *MockDataProvider) DeleteEntry(filename string) error {
 	args := m.Called(filename)
-	return args.Error(1)
+	return args.Error(0)
 }
 
 func (m *MockDataProvider) GetEntries() ([]string, error) {
@@ -41,4 +41,9 @@ func (m *MockDataProvider) GetEntry(filename string) (DataEntry, error) {
 func (m *MockDataProvider) HasEntry(filename string) bool {
 	args := m.Called(filename)
 	return args.Get(0).(bool)
+}
+
+func (m *MockDataProvider) GetG3Filepath(filename string) (string, error) {
+	args := m.Called(filename)
+	return args.Get(0).(string), args.Error(1)
 }

@@ -26,19 +26,22 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 		return err
 	}
 
-	g3filepath, err := fsdata.GetG3Filepath(filename)
+	g3filepath, err := h.D.GetG3Filepath(filename)
 	if err != nil {
 		return err
 	}
 
+	//TODO: Clean up this
 	/*
-		dataentry, err := h.D.GetEntry(g3filepath)
-		if err != nil {
-			return err
-		}
-	*/
+		if h.D.HasEntry(g3filepath) {
+			dataentry, err := h.D.GetEntry(g3filepath)
+			if err != nil {
+				return err
+			}
+		} else {
+		}*/
 
-	encryptedContent, err := crypto.EncryptAESGCM(content, h.aeskey)
+	encryptedContent, err := crypto.EncryptAESGCM(content, h.cfg.AESKey)
 	if err != nil {
 		return err
 	}
@@ -49,7 +52,7 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 		},
 	}
 
-	gistData, err := h.G.CreateGist(description, files, true, h.ghtoken)
+	gistData, err := h.G.CreateGist(description, files, true, h.cfg.GHToken)
 	if err != nil {
 		return err
 	}
