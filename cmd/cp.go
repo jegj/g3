@@ -42,7 +42,7 @@ Examples:
 
 func cp(cmd *cobra.Command, args []string) error {
 	slog.Debug("cp command...")
-	handler := handlers.NewG3BaseHandler(config.Conf.GHToken, config.Conf.AESKey)
+	handler := handlers.NewG3BaseHandler(config.Conf)
 	err := handler.Cp(args[0], description)
 	if err != nil {
 		return err

@@ -34,7 +34,7 @@ var rmCmd = &cobra.Command{
 
 func rm(cmd *cobra.Command, args []string) error {
 	slog.Debug("rm command...")
-	handler := handlers.NewG3BaseHandler(config.Conf.GHToken, config.Conf.AESKey)
+	handler := handlers.NewG3BaseHandler(config.Conf)
 	err := handler.Rm(args[0])
 	if err != nil {
 		return err

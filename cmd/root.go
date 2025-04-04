@@ -71,6 +71,7 @@ func initLogger(debugMode bool) {
 
 func initConfig() {
 	slog.Debug("Init config....")
+	// TODO: Check this. Probably can be removed
 	if configFile == "" {
 		dir, err := config.CreateConfigDirIfRequired()
 		if err != nil {
@@ -86,6 +87,11 @@ func initConfig() {
 	}
 
 	if err := config.Conf.Validate(); err != nil {
+		slog.Error(err.Error())
+		os.Exit(1)
+	}
+
+	if err := config.Conf.CreateDataDirIfRequired(); err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)
 	}

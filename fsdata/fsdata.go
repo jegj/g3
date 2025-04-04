@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/jegj/g3/config"
 )
 
 const (
@@ -28,10 +30,14 @@ type DataProvider interface {
 	HasEntry(filename string) bool
 }
 
-type FSDataService struct{}
+type FSDataService struct {
+	cfg config.Config
+}
 
-func NewDatatService() FSDataService {
-	return FSDataService{}
+func NewDatatService(cfg config.Config) FSDataService {
+	return FSDataService{
+		cfg: cfg,
+	}
 }
 
 func (d FSDataService) GetFileSize(absFilePath string) (int64, error) {

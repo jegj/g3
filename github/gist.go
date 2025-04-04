@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/jegj/g3/config"
 )
 
 const (
@@ -19,10 +21,14 @@ type GistProvider interface {
 	DeleteGist(id string, token string) error
 }
 
-type GistService struct{}
+type GistService struct {
+	cfg config.Config
+}
 
-func NewGistService(token string) GistService {
-	return GistService{}
+func NewGistService(cfg config.Config) GistService {
+	return GistService{
+		cfg: cfg,
+	}
 }
 
 func (g GistService) CreateGist(description string, files map[string]map[string]string, public bool, token string) (*GistResponse, error) {
