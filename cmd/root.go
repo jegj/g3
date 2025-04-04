@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 
 	"github.com/jegj/g3/config"
-	"github.com/jegj/g3/fsdata"
 	"github.com/jegj/g3/logger"
 	"github.com/spf13/cobra"
 )
@@ -58,7 +57,6 @@ var versionCmd = &cobra.Command{
 func initG3() {
 	initLogger(debug)
 	initConfig()
-	initData()
 }
 
 func initLogger(debugMode bool) {
@@ -92,15 +90,6 @@ func initConfig() {
 	}
 
 	if err := config.Conf.CreateDataDirIfRequired(); err != nil {
-		slog.Error(err.Error())
-		os.Exit(1)
-	}
-}
-
-func initData() {
-	slog.Debug("Init data....")
-	err := fsdata.CreateG3DataFolderIfRequired()
-	if err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)
 	}
