@@ -17,8 +17,8 @@ const (
 )
 
 type GistProvider interface {
-	CreateGist(description string, files map[string]map[string]string, public bool, token string) (*GistResponse, error)
-	DeleteGist(id string, token string) error
+	CreateGist(description string, files map[string]map[string]string, public bool) (*GistResponse, error)
+	DeleteGist(id string) error
 }
 
 type GistService struct {
@@ -31,7 +31,7 @@ func NewGistService(cfg config.Config) GistService {
 	}
 }
 
-func (g GistService) CreateGist(description string, files map[string]map[string]string, public bool, token string) (*GistResponse, error) {
+func (g GistService) CreateGist(description string, files map[string]map[string]string, public bool) (*GistResponse, error) {
 	client := &http.Client{}
 	requestData := GistCreateRequest{
 		Description: description,
@@ -49,7 +49,7 @@ func (g GistService) CreateGist(description string, files map[string]map[string]
 	}
 
 	req.Header.Set("Accept", DEFAULT_ACCEPT_HEADER)
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", g.cfg.GHToken))
 	req.Header.Set("X-GitHub-Api-Version", DEFAULT_GITHUB_VERSION)
 
 	resp, err := client.Do(req)
@@ -77,7 +77,7 @@ func (g GistService) CreateGist(description string, files map[string]map[string]
 	return &response, nil
 }
 
-func (g GistService) DeleteGist(id string, token string) error {
+func (g GistService) DeleteGist(id string) (err error) {
 	client := &http.Client{}
 	url := fmt.Sprintf("%s/%s", API_URL, id)
 
@@ -87,7 +87,7 @@ func (g GistService) DeleteGist(id string, token string) error {
 	}
 
 	req.Header.Set("Accept", DEFAULT_ACCEPT_HEADER)
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", g.cfg.GHToken))
 	req.Header.Set("X-GitHub-Api-Version", DEFAULT_GITHUB_VERSION)
 
 	resp, err := client.Do(req)
@@ -95,7 +95,11 @@ func (g GistService) DeleteGist(id string, token string) error {
 		return err
 	}
 
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
+	}()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -109,7 +113,7 @@ func (g GistService) DeleteGist(id string, token string) error {
 	return nil
 }
 
-func (g GistService) GetGist(id string, token string) error {
+func (g GistService) GetGist(id string) (err error) {
 	client := &http.Client{}
 	url := fmt.Sprintf("%s/%s", API_URL, id)
 
@@ -119,7 +123,7 @@ func (g GistService) GetGist(id string, token string) error {
 	}
 
 	req.Header.Set("Accept", DEFAULT_ACCEPT_HEADER)
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", g.cfg.GHToken))
 	req.Header.Set("X-GitHub-Api-Version", DEFAULT_GITHUB_VERSION)
 
 	resp, err := client.Do(req)
@@ -127,7 +131,11 @@ func (g GistService) GetGist(id string, token string) error {
 		return err
 	}
 
-	defer resp.Body.Close()
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
+	}()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {

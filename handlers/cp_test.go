@@ -100,7 +100,7 @@ func TestCp_ErrorCreateGist(t *testing.T) {
 	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
 	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
 	mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
-	mockGistProvider.On("CreateGist", description, mock.Anything, true, cfg.GHToken).Return(&github.GistResponse{}, errors.New("could not create gist"))
+	mockGistProvider.On("CreateGist", description, mock.Anything, true).Return(&github.GistResponse{}, errors.New("could not create gist"))
 
 	err := g3handler.Cp("/tmp/backup_25_03_2025.tar.gz", description)
 
@@ -157,7 +157,7 @@ func TestCp_ErrorAppendEntry(t *testing.T) {
 	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
 	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
 	mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
-	mockGistProvider.On("CreateGist", description, mock.Anything, true, cfg.GHToken).Return(githubResponse, nil)
+	mockGistProvider.On("CreateGist", description, mock.Anything, true).Return(githubResponse, nil)
 	mockDataProvider.On("AppendEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
 		gistEntry,
 	}).Return(errors.New("could not append entry"))

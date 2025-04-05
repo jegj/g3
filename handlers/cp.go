@@ -52,7 +52,7 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 		},
 	}
 
-	gistData, err := h.G.CreateGist(description, files, true, h.cfg.GHToken)
+	gistData, err := h.G.CreateGist(description, files, true)
 	if err != nil {
 		return err
 	}

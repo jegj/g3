@@ -28,7 +28,7 @@ func (g *G3BaseHandler) Rm(filename string) error {
 	for filename, fileGist := range entry {
 		slog.Debug("Deleting file....", "filename", filename)
 		for _, gist := range fileGist.Gist {
-			err := g.G.DeleteGist(gist.ID, g.cfg.GHToken)
+			err := g.G.DeleteGist(gist.ID)
 			if err != nil {
 				return err
 			}
