@@ -9,12 +9,12 @@ import (
 
 // TODO: Handler err when one call to github api fails and the other not
 // TODO: Parallel delete calls when the file contains more than one gist
-func (g *G3BaseHandler) Rm(filename string) error {
-	g3filepath, err := g.D.GetG3Filepath(filename)
+func (h *G3BaseHandler) Rm(filename string) error {
+	g3filepath, err := h.DataService.GetG3Filepath(filename)
 	if err != nil {
 		return err
 	}
-	content, err := g.D.GetFileContent(g3filepath)
+	content, err := h.DataService.GetFileContent(g3filepath)
 	if err != nil {
 		return err
 	}
@@ -28,14 +28,14 @@ func (g *G3BaseHandler) Rm(filename string) error {
 	for filename, fileGist := range entry {
 		slog.Debug("Deleting file....", "filename", filename)
 		for _, gist := range fileGist.Gist {
-			err := g.G.DeleteGist(gist.ID)
+			err := h.GithubService.DeleteGist(gist.ID)
 			if err != nil {
 				return err
 			}
 		}
 	}
 
-	err = g.D.DeleteEntry(g3filepath)
+	err = h.DataService.DeleteEntry(g3filepath)
 	if err != nil {
 		return err
 	}

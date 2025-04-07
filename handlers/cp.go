@@ -14,19 +14,19 @@ import (
 func (h *G3BaseHandler) Cp(filepath string, description string) error {
 	filename := fsdata.GetFileName(filepath)
 
-	size, err := h.D.GetFileSize(filepath)
+	size, err := h.DataService.GetFileSize(filepath)
 	if err != nil {
 		return err
 	}
 	// TODO: REMOVE THIS LATER
 	slog.Info("File processed", "filename", filepath, "size", size)
 
-	content, err := h.D.GetFileContent(filepath)
+	content, err := h.DataService.GetFileContent(filepath)
 	if err != nil {
 		return err
 	}
 
-	g3filepath, err := h.D.GetG3Filepath(filename)
+	g3filepath, err := h.DataService.GetG3Filepath(filename)
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 		},
 	}
 
-	gistData, err := h.G.CreateGist(description, files, true)
+	gistData, err := h.GithubService.CreateGist(description, files, true)
 	if err != nil {
 		return err
 	}
@@ -61,7 +61,7 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 		GistPath: gistData.Url,
 	}
 
-	err = h.D.AppendEntry(g3filepath, []fsdata.GistEntry{gistEntry})
+	err = h.DataService.AppendEntry(g3filepath, []fsdata.GistEntry{gistEntry})
 	if err != nil {
 		return err
 	}

@@ -1,7 +1,7 @@
 package handlers
 
-func (g *G3BaseHandler) Ls() ([]string, error) {
-	files, err := g.D.GetEntries()
+func (h *G3BaseHandler) Ls() ([]string, error) {
+	files, err := h.DataService.GetEntries()
 	if err != nil {
 		return []string{}, err
 	}
