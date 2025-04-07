@@ -165,3 +165,61 @@ func TestCp_ErrorAppendEntry(t *testing.T) {
 	assert.Error(t, err)
 	mockDataProvider.AssertExpectations(t)
 }
+
+func TestCp_SuccessOneFileNoOverride(t *testing.T) {
+	content := []byte{
+		0x1F, 0x2A, 0x3C, 0x4D, 0x5E, 0x6F, 0x7A, 0x8B,
+		0x9C, 0xAD, 0xBE, 0xCF, 0xD1, 0xE2, 0xF3, 0x04,
+		0x15, 0x26, 0x37, 0x48, 0x59, 0x6A, 0x7B, 0x8C,
+		0x9D, 0xAE, 0xBF, 0xC0, 0xD2, 0xE3, 0xF4, 0x05,
+	}
+	description := "Small backup file"
+	mockGistProvider := new(github.MockGistProvider)
+	mockDataProvider := new(fsdata.MockDataProvider)
+	g3handler := G3BaseHandler{
+		cfg: cfg,
+		G:   mockGistProvider,
+		D:   mockDataProvider,
+	}
+	githubResponse := &github.GistResponse{
+		Url:       "https://api.github.com/gists/88dfea43e4262d04557b01c0cfc3c7ba",
+		Id:        "88dfea43e4262d04557b01c0cfc3c7ba",
+		Public:    false,
+		Truncated: false,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Files: map[string]github.FileGist{
+			"example.go": {
+				Filename:  "profile.txt",
+				Type:      "text/plain",
+				Size:      123,
+				RawUrl:    "https://gist.githubusercontent.com/raw/example",
+				Truncated: false,
+				Content:   "�Ex6���=���Tg!�^�7�Tq\x16ȏ�뛫�0�u\b��䣖tN\x1f", // encrypted content
+			},
+		},
+	}
+	gistEntry := fsdata.GistEntry{
+		ID:       githubResponse.Id,
+		GistPath: githubResponse.Url,
+	}
+	/*
+		files := map[string]map[string]string{
+			"backup_25_03_2025.tar.gz": {
+				"content": mock.Anything,
+			},
+		}
+	*/
+	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
+	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
+	mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
+	mockGistProvider.On("CreateGist", description, mock.Anything, true).Return(githubResponse, nil)
+	mockDataProvider.On("AppendEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
+		gistEntry,
+	}).Return(nil)
+
+	err := g3handler.Cp("/tmp/backup_25_03_2025.tar.gz", description)
+
+	assert.NoError(t, err)
+	mockDataProvider.AssertExpectations(t)
+}
