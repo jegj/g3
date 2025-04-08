@@ -6,6 +6,13 @@ of GitHub’s infrastructure. G3 is perfect for developers who need a quick,
 reliable, and Git-native way to manage small to medium-sized files without
 setting up complex storage systems.
 
+## Limitation
+
+Since G3 relies in Github Gist API, do not use for really heavy files.
+Gist limits the file size for a file in a Gist to 100MB. There is not a
+strict limit for the number of files in a gist but there are some limits
+for hitting the Github API per key
+
 ## Installation
 
 ## Configuration
