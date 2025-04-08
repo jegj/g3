@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log/slog"
 
 	"github.com/jegj/g3/fsdata"
 )
@@ -25,13 +24,10 @@ func (h *G3BaseHandler) Rm(filename string) error {
 		return err
 	}
 
-	for filename, fileGist := range entry {
-		slog.Debug("Deleting file....", "filename", filename)
-		for _, gist := range fileGist.Gist {
-			err := h.GithubService.DeleteGist(gist.ID)
-			if err != nil {
-				return err
-			}
+	for _, gist := range entry.Gist {
+		err := h.GithubService.DeleteGist(gist.ID)
+		if err != nil {
+			return err
 		}
 	}
 

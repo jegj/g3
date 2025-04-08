@@ -1,9 +1,10 @@
 package fsdata
 
-type DataEntry map[string]FileGist
+import "time"
 
-type FileGist struct {
-	Gist []GistEntry `json:"gist"`
+type DataEntry struct {
+	Gist      []GistEntry `json:"gist"`
+	CreatedAt time.Time   `json:"created_at"`
 }
 
 type GistEntry struct {

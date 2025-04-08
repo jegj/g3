@@ -10,7 +10,7 @@ import (
 // TODO: partition file if required
 // TODO: sync more than one data file
 // TODO: what if the file already exists but the content change
-// TODO: add createdAt time for whole file
+// TODO: add checksum for each file/part to avoid upload the same chunk from the file
 func (h *G3BaseHandler) Cp(filepath string, description string) error {
 	filename := fsdata.GetFileName(filepath)
 
@@ -31,15 +31,15 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 		return err
 	}
 
-	//TODO: Clean up this
 	/*
-		if h.D.HasEntry(g3filepath) {
-			dataentry, err := h.D.GetEntry(g3filepath)
+		if h.DataService.HasEntry(g3filepath) {
+			dataentry, err := h.DataService.GetEntry(g3filepath)
 			if err != nil {
 				return err
 			}
 		} else {
-		}*/
+		}
+	*/
 
 	encryptedContent, err := crypto.EncryptAESGCM(content, h.cfg.AESKey)
 	if err != nil {
@@ -47,6 +47,7 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 	}
 
 	files := map[string]map[string]string{
+		// TODO: USER GENERIC NAME FOR FILES
 		filename: {
 			"content": string(encryptedContent),
 		},

@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/jegj/g3/config"
 )
@@ -66,9 +67,9 @@ func (d FSDataService) AppendEntry(filename string, gists []GistEntry) (err erro
 		}
 	}()
 
-	fileGist := FileGist{Gist: gists}
 	dataEntry := DataEntry{
-		filename: fileGist,
+		Gist:      gists,
+		CreatedAt: time.Now(),
 	}
 
 	data, err := json.Marshal(dataEntry)
@@ -90,7 +91,7 @@ func (d FSDataService) DeleteEntry(filename string) error {
 
 // FIXME: Only valid file. e.g .setting.swp or hidden files
 func (d FSDataService) GetEntries() ([]string, error) {
-	files, err := os.ReadDir(DEFAULT_DATA_FILE_FOLDER)
+	files, err := os.ReadDir(d.cfg.DataFolder)
 	if err != nil {
 		return []string{}, err
 	}
@@ -112,12 +113,12 @@ func (d FSDataService) GetEntries() ([]string, error) {
 func (d FSDataService) GetEntry(g3filepath string) (DataEntry, error) {
 	data, err := os.ReadFile(g3filepath)
 	if err != nil {
-		return nil, err
+		return DataEntry{}, err
 	}
 	dataEntry := DataEntry{}
 	err = json.Unmarshal(data, &dataEntry)
 	if err != nil {
-		return nil, err
+		return DataEntry{}, err
 	}
 
 	return dataEntry, nil
