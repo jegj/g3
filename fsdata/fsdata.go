@@ -12,15 +12,7 @@ import (
 	"github.com/jegj/g3/config"
 )
 
-const (
-	DEFAULT_DATA_FILE_FOLDERNAME = "files"
-)
-
-var (
-	DEFAULT_DATA_FOLDER      = filepath.Join(os.Getenv("HOME"), ".local", "share", "g3")
-	DEFAULT_DATA_FILE_FOLDER = filepath.Join(DEFAULT_DATA_FOLDER, DEFAULT_DATA_FILE_FOLDERNAME)
-	ErrEntryNotFound         = errors.New("entry not found")
-)
+var ErrEntryNotFound = errors.New("entry not found")
 
 type DataProvider interface {
 	AppendEntry(filename string, gists []GistEntry) error
