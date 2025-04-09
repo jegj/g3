@@ -31,41 +31,39 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 		return err
 	}
 
-	/*
-		if h.DataService.HasEntry(g3filepath) {
-			dataentry, err := h.DataService.GetEntry(g3filepath)
-			if err != nil {
-				return err
-			}
-		} else {
+	if h.DataService.HasEntry(g3filepath) {
+		_, err := h.DataService.GetEntry(g3filepath)
+		if err != nil {
+			return err
 		}
-	*/
+		// TODO: CHANGE THIS
+		return nil
+	} else {
+		encryptedContent, err := crypto.EncryptAESGCM(content, h.cfg.AESKey)
+		if err != nil {
+			return err
+		}
 
-	encryptedContent, err := crypto.EncryptAESGCM(content, h.cfg.AESKey)
-	if err != nil {
-		return err
-	}
+		files := map[string]map[string]string{
+			// TODO: USER GENERIC NAME FOR FILES
+			filename: {
+				"content": string(encryptedContent),
+			},
+		}
 
-	files := map[string]map[string]string{
-		// TODO: USER GENERIC NAME FOR FILES
-		filename: {
-			"content": string(encryptedContent),
-		},
-	}
+		gistData, err := h.GithubService.CreateGist(description, files, true)
+		if err != nil {
+			return err
+		}
+		gistEntry := fsdata.GistEntry{
+			ID:       gistData.Id,
+			GistPath: gistData.Url,
+		}
 
-	gistData, err := h.GithubService.CreateGist(description, files, true)
-	if err != nil {
-		return err
+		err = h.DataService.AppendEntry(g3filepath, []fsdata.GistEntry{gistEntry})
+		if err != nil {
+			return err
+		}
+		return nil
 	}
-	gistEntry := fsdata.GistEntry{
-		ID:       gistData.Id,
-		GistPath: gistData.Url,
-	}
-
-	err = h.DataService.AppendEntry(g3filepath, []fsdata.GistEntry{gistEntry})
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
