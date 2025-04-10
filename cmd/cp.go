@@ -12,6 +12,7 @@ import (
 
 var description string
 
+// TODO: Present warning of overriding file
 var cpCmd = &cobra.Command{
 	Use:   "cp [file]",
 	Short: "Add a new file into your storage",
