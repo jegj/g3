@@ -19,6 +19,7 @@ const (
 type GistProvider interface {
 	CreateGist(description string, files map[string]map[string]string, public bool) (*GistResponse, error)
 	DeleteGist(id string) error
+	UpdateGist(id string, description string, files map[string]map[string]string, public bool) (*GistResponse, error)
 }
 
 type GistService struct {
@@ -151,4 +152,46 @@ func (g GistService) GetGist(id string) (err error) {
 	}
 
 	return nil
+}
+
+func (g GistService) UpdateGist(id string, description string, files map[string]map[string]string, public bool) (*GistResponse, error) {
+	client := &http.Client{}
+	url := fmt.Sprintf("%s/%s", API_URL, id)
+
+	req, err := http.NewRequest(http.MethodPatch, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Accept", DEFAULT_ACCEPT_HEADER)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", g.cfg.GHToken))
+	req.Header.Set("X-GitHub-Api-Version", DEFAULT_GITHUB_VERSION)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		if cerr := resp.Body.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
+	}()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusAccepted {
+		return nil, fmt.Errorf("gist update failed with status code %d: %s", resp.StatusCode, string(body))
+	}
+
+	var response GistResponse
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	return &response, nil
 }
