@@ -32,12 +32,40 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 	}
 
 	if h.DataService.HasEntry(g3filepath) {
-		_, err := h.DataService.GetEntry(g3filepath)
+		dataEntry, err := h.DataService.GetEntry(g3filepath)
 		if err != nil {
 			return err
 		}
-		// TODO: CHANGE THIS
+
+		encryptedContent, err := crypto.EncryptAESGCM(content, h.cfg.AESKey)
+		if err != nil {
+			return err
+		}
+
+		files := map[string]map[string]string{
+			// TODO: USER GENERIC NAME FOR FILES
+			filename: {
+				"content": string(encryptedContent),
+			},
+		}
+
+		// TODO: GETTING FIRST ONE
+		gistData, err := h.GithubService.UpdateGist(dataEntry.Gist[0].ID, description, files, true)
+		if err != nil {
+			return err
+		}
+
+		gistEntry := fsdata.GistEntry{
+			ID:       gistData.Id,
+			GistPath: gistData.Url,
+		}
+
+		err = h.DataService.AppendEntry(g3filepath, []fsdata.GistEntry{gistEntry})
+		if err != nil {
+			return err
+		}
 		return nil
+
 	} else {
 		encryptedContent, err := crypto.EncryptAESGCM(content, h.cfg.AESKey)
 		if err != nil {
