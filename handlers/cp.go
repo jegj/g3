@@ -9,7 +9,6 @@ import (
 
 // TODO: partition file if required
 // TODO: sync more than one data file
-// TODO: what if the file already exists but the content change
 // TODO: add checksum for each file/part to avoid upload the same chunk from the file
 func (h *G3BaseHandler) Cp(filepath string, description string) error {
 	filename := fsdata.GetFileName(filepath)

@@ -335,8 +335,7 @@ func TestCp_ErrorAppendEntryOverride(t *testing.T) {
 	mockDataProvider.AssertExpectations(t)
 }
 
-/*
-func TestCp_SuccessOneFileOverride(t *testing.T) {
+func TestCp_SuccessOverride(t *testing.T) {
 	content := []byte{
 		0x1F, 0x2A, 0x3C, 0x4D, 0x5E, 0x6F, 0x7A, 0x8B,
 		0x9C, 0xAD, 0xBE, 0xCF, 0xD1, 0xE2, 0xF3, 0x04,
@@ -351,19 +350,28 @@ func TestCp_SuccessOneFileOverride(t *testing.T) {
 		GithubService: mockGistProvider,
 		DataService:   mockDataProvider,
 	}
+	dataEntry := fsdata.DataEntry{
+		CreatedAt: time.Now(),
+		Gist: []fsdata.GistEntry{
+			{
+				ID:       "2decf6c462d9b4418f2",
+				GistPath: "https://api.github.com/gists/2decf6c462d9b4418f2",
+			},
+		},
+	}
 	githubResponse := &github.GistResponse{
-		Url:       "https://api.github.com/gists/88dfea43e4262d04557b01c0cfc3c7ba",
-		Id:        "88dfea43e4262d04557b01c0cfc3c7ba",
+		Url:       "https://api.github.com/gists/99dfea43e4262c04557b12c0cfc6c7jn",
+		Id:        "99dfea43e4262c04557b12c0cfc6c7jn",
 		Public:    false,
 		Truncated: false,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Files: map[string]github.FileGist{
-			"example.go": {
-				Filename:  "profile.txt",
+			"backup_25_03_2025.tar.gz": {
+				Filename:  "backup_25_03_2025.tar.gz",
 				Type:      "text/plain",
-				Size:      123,
-				RawUrl:    "https://gist.githubusercontent.com/raw/example",
+				Size:      200,
+				RawUrl:    "https://gist.githubusercontent.com/raw/backup_25_03_2025.tar.gz",
 				Truncated: false,
 				Content:   "�Ex6���=���Tg!�^�7�Tq\x16ȏ�뛫�0�u\b��䣖tN\x1f", // encrypted content
 			},
@@ -373,16 +381,12 @@ func TestCp_SuccessOneFileOverride(t *testing.T) {
 		ID:       githubResponse.Id,
 		GistPath: githubResponse.Url,
 	}
-	/*
-		files := map[string]map[string]string{
-			"backup_25_03_2025.tar.gz": {
-				"content": mock.Anything,
-			},
-		}
 	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
 	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
 	mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
-	mockGistProvider.On("CreateGist", description, mock.Anything, true).Return(githubResponse, nil)
+	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(true)
+	mockDataProvider.On("GetEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(dataEntry, nil)
+	mockGistProvider.On("UpdateGist", "2decf6c462d9b4418f2", description, mock.Anything, true).Return(githubResponse, nil)
 	mockDataProvider.On("AppendEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
 		gistEntry,
 	}).Return(nil)
@@ -391,5 +395,5 @@ func TestCp_SuccessOneFileOverride(t *testing.T) {
 
 	assert.NoError(t, err)
 	mockDataProvider.AssertExpectations(t)
+	mockGistProvider.AssertExpectations(t)
 }
-*/
