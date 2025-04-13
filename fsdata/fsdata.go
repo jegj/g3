@@ -16,6 +16,7 @@ var ErrEntryNotFound = errors.New("entry not found")
 
 type DataProvider interface {
 	AppendEntry(filename string, gists []GistEntry) error
+	UpdateEntry(filename string, gists []GistEntry) error
 	DeleteEntry(filename string) error
 	GetEntries() ([]string, error)
 	GetFileSize(absFilePath string) (int64, error)
@@ -79,6 +80,31 @@ func (d FSDataService) DeleteEntry(filename string) error {
 		return err
 	}
 	return nil
+}
+
+func (d FSDataService) UpdateEntry(filename string, gists []GistEntry) (err error) {
+	file, err := os.OpenFile(filename, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if cerr := file.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
+	}()
+
+	dataEntry := DataEntry{
+		Gist:      gists,
+		CreatedAt: time.Now(),
+	}
+
+	data, err := json.Marshal(dataEntry)
+	if err != nil {
+		return err
+	}
+
+	_, err = file.Write(append(data, '\n'))
+	return err
 }
 
 // FIXME: Only valid file. e.g .setting.swp or hidden files

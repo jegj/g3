@@ -13,6 +13,11 @@ func (m *MockDataProvider) AppendEntry(filename string, gists []GistEntry) error
 	return args.Error(0)
 }
 
+func (m *MockDataProvider) UpdateEntry(filename string, gists []GistEntry) error {
+	args := m.Called(filename, gists)
+	return args.Error(0)
+}
+
 func (m *MockDataProvider) DeleteEntry(filename string) error {
 	args := m.Called(filename)
 	return args.Error(0)
