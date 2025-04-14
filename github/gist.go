@@ -155,10 +155,20 @@ func (g GistService) GetGist(id string) (err error) {
 }
 
 func (g GistService) UpdateGist(id string, description string, files map[string]map[string]string, public bool) (*GistResponse, error) {
-	client := &http.Client{}
 	url := fmt.Sprintf("%s/%s", API_URL, id)
+	client := &http.Client{}
+	requestData := GistCreateRequest{
+		Description: description,
+		Public:      public,
+		Files:       files,
+	}
 
-	req, err := http.NewRequest(http.MethodPatch, url, nil)
+	jsonData, err := json.Marshal(requestData)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, err
 	}
