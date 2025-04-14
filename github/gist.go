@@ -183,7 +183,7 @@ func (g GistService) UpdateGist(id string, description string, files map[string]
 		return nil, err
 	}
 
-	if resp.StatusCode != http.StatusAccepted {
+	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("gist update failed with status code %d: %s", resp.StatusCode, string(body))
 	}
 
