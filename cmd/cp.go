@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
 
 	"github.com/jegj/g3/config"
@@ -44,7 +45,25 @@ Examples:
 func cp(cmd *cobra.Command, args []string) error {
 	slog.Debug("cp command...")
 	handler := handlers.NewG3BaseHandler(config.Conf)
-	err := handler.Cp(args[0], description)
+	filename := args[0]
+	isOverrindingFile, err := handler.IsOverrindingFile(filename)
+	if err != nil {
+		return err
+	}
+
+	if isOverrindingFile {
+		var response string
+		fmt.Print("There is file with the same name in your storage.Are you sure you want to override the file? (y/n):")
+		_, err := fmt.Scanln(&response)
+		if err != nil {
+			return err
+		}
+
+		if response != "y" && response != "Y" {
+			return errors.New("error: canceled by the user")
+		}
+	}
+	err = handler.Cp(filename, description)
 	if err != nil {
 		return err
 	} else {
