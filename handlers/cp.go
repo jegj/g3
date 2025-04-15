@@ -7,6 +7,15 @@ import (
 	"github.com/jegj/g3/fsdata"
 )
 
+func (h *G3BaseHandler) IsOverrindingFile(filepath string) (bool, error) {
+	filename := fsdata.GetFileName(filepath)
+	g3filepath, err := h.DataService.GetG3Filepath(filename)
+	if err != nil {
+		return false, err
+	}
+	return h.DataService.HasEntry(g3filepath), nil
+}
+
 // TODO: partition file if required
 // TODO: sync more than one data file
 // TODO: add checksum for each file/part to avoid upload the same chunk from the file
@@ -59,7 +68,7 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 			GistPath: gistData.Url,
 		}
 
-		err = h.DataService.AppendEntry(g3filepath, []fsdata.GistEntry{gistEntry})
+		err = h.DataService.UpdateEntry(g3filepath, []fsdata.GistEntry{gistEntry})
 		if err != nil {
 			return err
 		}
