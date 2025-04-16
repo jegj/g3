@@ -42,15 +42,12 @@ Examples:
 	RunE: cp,
 }
 
+// TODO: Validate data input
 func cp(cmd *cobra.Command, args []string) error {
 	slog.Debug("cp command...")
 	handler := handlers.NewG3BaseHandler(config.Conf)
 	filename := args[0]
-	isOverrindingFile, err := handler.IsOverrindingFile(filename)
-	if err != nil {
-		return err
-	}
-
+	isOverrindingFile := handler.IsOverrindingFile(filename)
 	if isOverrindingFile {
 		var response string
 		fmt.Print("There is file with the same name in your storage.Are you sure you want to override the file? (y/n):")
@@ -63,7 +60,7 @@ func cp(cmd *cobra.Command, args []string) error {
 			return errors.New("error: canceled by the user")
 		}
 	}
-	err = handler.Cp(filename, description)
+	err := handler.Cp(filename, description)
 	if err != nil {
 		return err
 	} else {

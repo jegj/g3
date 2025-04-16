@@ -5,15 +5,12 @@ import (
 
 	"github.com/jegj/g3/crypto"
 	"github.com/jegj/g3/fsdata"
+	"github.com/jegj/g3/g3unit"
 )
 
-func (h *G3BaseHandler) IsOverrindingFile(filepath string) (bool, error) {
-	filename := fsdata.GetFileName(filepath)
-	g3filepath, err := h.DataService.GetG3Filepath(filename)
-	if err != nil {
-		return false, err
-	}
-	return h.DataService.HasEntry(g3filepath), nil
+func (h *G3BaseHandler) IsOverrindingFile(filepath string) bool {
+	g3unit := g3unit.NewG3Unit(filepath, h.cfg)
+	return h.DataService.HasEntry(g3unit.G3Filepath)
 }
 
 // TODO: partition file if required
