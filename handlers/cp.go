@@ -17,6 +17,7 @@ func (h *G3BaseHandler) IsOverrindingFile(filepath string) bool {
 // TODO: sync more than one data file
 // TODO: add checksum for each file/part to avoid upload the same chunk from the file
 func (h *G3BaseHandler) Cp(filepath string, description string) error {
+	g3unit := g3unit.NewG3Unit(filepath, h.cfg)
 	filename := fsdata.GetFileName(filepath)
 
 	size, err := h.DataService.GetFileSize(filepath)
@@ -26,18 +27,21 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 	// TODO: REMOVE THIS LATER
 	slog.Info("File processed", "filename", filepath, "size", size)
 
-	content, err := h.DataService.GetFileContent(filepath)
+	content, err := h.DataService.GetFileContent(g3unit.Filepath)
 	if err != nil {
 		return err
 	}
 
-	g3filepath, err := h.DataService.GetG3Filepath(filename)
-	if err != nil {
-		return err
-	}
+	/*
+		*  REMOVE THIS
+			g3filepath, err := h.DataService.GetG3Filepath(filename)
+			if err != nil {
+				return err
+			}
+	*/
 
-	if h.DataService.HasEntry(g3filepath) {
-		dataEntry, err := h.DataService.GetEntry(g3filepath)
+	if h.DataService.HasEntry(g3unit.G3Filepath) {
+		dataEntry, err := h.DataService.GetEntry(g3unit.G3Filepath)
 		if err != nil {
 			return err
 		}
@@ -65,7 +69,7 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 			GistPath: gistData.Url,
 		}
 
-		err = h.DataService.UpdateEntry(g3filepath, []fsdata.GistEntry{gistEntry})
+		err = h.DataService.UpdateEntry(g3unit.G3Filepath, []fsdata.GistEntry{gistEntry})
 		if err != nil {
 			return err
 		}
@@ -93,7 +97,7 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 			GistPath: gistData.Url,
 		}
 
-		err = h.DataService.AppendEntry(g3filepath, []fsdata.GistEntry{gistEntry})
+		err = h.DataService.AppendEntry(g3unit.G3Filepath, []fsdata.GistEntry{gistEntry})
 		if err != nil {
 			return err
 		}

@@ -51,6 +51,7 @@ func TestCp_ErrorGetFileContent(t *testing.T) {
 	mockDataProvider.AssertExpectations(t)
 }
 
+/*
 func TestCp_ErrorGetG3Filepath(t *testing.T) {
 	content := []byte{
 		0x1F, 0x2A, 0x3C, 0x4D, 0x5E, 0x6F, 0x7A, 0x8B,
@@ -67,13 +68,14 @@ func TestCp_ErrorGetG3Filepath(t *testing.T) {
 	}
 	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
 	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("", errors.New("could not get the g3 filepath"))
+	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("", errors.New("could not get the g3 filepath"))
 
 	err := g3handler.Cp("/tmp/backup_25_03_2025.tar.gz", "Small backup file")
 
 	assert.Error(t, err)
 	mockDataProvider.AssertExpectations(t)
 }
+*/
 
 func TestCp_ErrorCreateGist(t *testing.T) {
 	content := []byte{
@@ -92,7 +94,7 @@ func TestCp_ErrorCreateGist(t *testing.T) {
 	}
 	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
 	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
+	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
 	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(false)
 	mockGistProvider.On("CreateGist", description, mock.Anything, true).Return(&github.GistResponse{}, errors.New("could not create gist"))
 
@@ -142,7 +144,7 @@ func TestCp_ErrorAppendEntry(t *testing.T) {
 	}
 	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
 	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
+	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
 	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(false)
 	mockGistProvider.On("CreateGist", description, mock.Anything, true).Return(githubResponse, nil)
 	mockDataProvider.On("AppendEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
@@ -195,7 +197,7 @@ func TestCp_SuccessOneFileNoOverride(t *testing.T) {
 	}
 	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
 	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
+	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
 	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(false)
 	mockGistProvider.On("CreateGist", description, mock.Anything, true).Return(githubResponse, nil)
 	mockDataProvider.On("AppendEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
@@ -226,7 +228,7 @@ func TestCp_ErrorGettingEntryOnFileOverride(t *testing.T) {
 	}
 	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
 	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
+	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
 	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(true)
 	mockDataProvider.On("GetEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(fsdata.DataEntry{}, errors.New("failed to load file"))
 
@@ -262,7 +264,7 @@ func TestCp_ErrorUpdateGistOverride(t *testing.T) {
 	}
 	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
 	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
+	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
 	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(true)
 	mockDataProvider.On("GetEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(dataEntry, nil)
 	mockGistProvider.On("UpdateGist", "2decf6c462d9b4418f2", description, mock.Anything, true).Return(&github.GistResponse{}, errors.New("failed to update gist"))
@@ -321,11 +323,11 @@ func TestCp_ErrorAppendEntryOverride(t *testing.T) {
 	}
 	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
 	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
+	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
 	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(true)
 	mockDataProvider.On("GetEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(dataEntry, nil)
 	mockGistProvider.On("UpdateGist", "2decf6c462d9b4418f2", description, mock.Anything, true).Return(githubResponse, nil)
-	mockDataProvider.On("AppendEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
+	mockDataProvider.On("UpdateEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
 		gistEntry,
 	}).Return(errors.New("could not append entry"))
 
@@ -383,11 +385,11 @@ func TestCp_SuccessOverride(t *testing.T) {
 	}
 	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
 	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
+	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
 	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(true)
 	mockDataProvider.On("GetEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(dataEntry, nil)
 	mockGistProvider.On("UpdateGist", "2decf6c462d9b4418f2", description, mock.Anything, true).Return(githubResponse, nil)
-	mockDataProvider.On("AppendEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
+	mockDataProvider.On("UpdateEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
 		gistEntry,
 	}).Return(nil)
 
