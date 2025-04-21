@@ -47,8 +47,3 @@ func (m *MockDataProvider) HasEntry(filename string) bool {
 	args := m.Called(filename)
 	return args.Get(0).(bool)
 }
-
-func (m *MockDataProvider) GetG3Filepath(filename string) (string, error) {
-	args := m.Called(filename)
-	return args.Get(0).(string), args.Error(1)
-}

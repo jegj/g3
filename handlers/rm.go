@@ -4,16 +4,14 @@ import (
 	"encoding/json"
 
 	"github.com/jegj/g3/fsdata"
+	"github.com/jegj/g3/g3unit"
 )
 
 // TODO: Handler err when one call to github api fails and the other not
 // TODO: Parallel delete calls when the file contains more than one gist
 func (h *G3BaseHandler) Rm(filename string) error {
-	g3filepath, err := h.DataService.GetG3Filepath(filename)
-	if err != nil {
-		return err
-	}
-	content, err := h.DataService.GetFileContent(g3filepath)
+	g3unit := g3unit.NewG3Unit(filename, h.cfg)
+	content, err := h.DataService.GetFileContent(g3unit.G3Filepath)
 	if err != nil {
 		return err
 	}
@@ -31,7 +29,7 @@ func (h *G3BaseHandler) Rm(filename string) error {
 		}
 	}
 
-	err = h.DataService.DeleteEntry(g3filepath)
+	err = h.DataService.DeleteEntry(g3unit.G3Filepath)
 	if err != nil {
 		return err
 	}

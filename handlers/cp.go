@@ -32,14 +32,6 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 		return err
 	}
 
-	/*
-		*  REMOVE THIS
-			g3filepath, err := h.DataService.GetG3Filepath(filename)
-			if err != nil {
-				return err
-			}
-	*/
-
 	if h.DataService.HasEntry(g3unit.G3Filepath) {
 		dataEntry, err := h.DataService.GetEntry(g3unit.G3Filepath)
 		if err != nil {
