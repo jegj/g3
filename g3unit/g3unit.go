@@ -17,9 +17,10 @@ type G3Unit struct {
 func NewG3Unit(fpath string, cfg config.Config) G3Unit {
 	filename := filepath.Base(fpath)
 	g3filename := fmt.Sprintf("%s.g3.json", filename)
+	g3filepath := filepath.Join(cfg.DataFolder, g3filename)
 	return G3Unit{
 		G3Filename: g3filename,
-		G3Filepath: filepath.Join(cfg.DataFolder, g3filename),
+		G3Filepath: g3filepath,
 		Filename:   filename,
 		Filepath:   fpath,
 	}
