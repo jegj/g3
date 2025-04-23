@@ -8,32 +8,32 @@ import (
 	"github.com/jegj/g3/g3unit"
 )
 
-func (h *G3BaseHandler) IsOverrindingFile(filepath string) bool {
-	g3unit := g3unit.NewG3Unit(filepath, h.cfg)
-	return h.DataService.HasEntry(g3unit.G3Filepath)
+func (h *G3BaseHandler) IsOverrindingFile(inputFilePath string) bool {
+	g3unit := g3unit.NewG3Unit(inputFilePath, h.cfg)
+	return h.DataService.HasEntry(g3unit)
 }
 
 // TODO: partition file if required
 // TODO: sync more than one data file
 // TODO: add checksum for each file/part to avoid upload the same chunk from the file
-func (h *G3BaseHandler) Cp(filepath string, description string) error {
-	g3unit := g3unit.NewG3Unit(filepath, h.cfg)
+func (h *G3BaseHandler) Cp(inputFilePath string, description string) error {
+	g3unit := g3unit.NewG3Unit(inputFilePath, h.cfg)
 	filename := g3unit.Filename
 
-	size, err := h.DataService.GetFileSize(filepath)
+	size, err := h.DataService.GetFileSize(g3unit)
 	if err != nil {
 		return err
 	}
 	// TODO: REMOVE THIS LATER
-	slog.Info("File processed", "filename", filepath, "size", size)
+	slog.Info("File processed", "filename", inputFilePath, "size", size)
 
-	content, err := h.DataService.GetFileContent(g3unit.Filepath)
+	content, err := h.DataService.GetFileContent(g3unit)
 	if err != nil {
 		return err
 	}
 
-	if h.DataService.HasEntry(g3unit.G3Filepath) {
-		dataEntry, err := h.DataService.GetEntry(g3unit.G3Filepath)
+	if h.DataService.HasEntry(g3unit) {
+		dataEntry, err := h.DataService.GetEntry(g3unit)
 		if err != nil {
 			return err
 		}
@@ -61,7 +61,7 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 			GistPath: gistData.Url,
 		}
 
-		err = h.DataService.UpdateEntry(g3unit.G3Filepath, []fsdata.GistEntry{gistEntry})
+		err = h.DataService.UpdateEntry(g3unit, []fsdata.GistEntry{gistEntry})
 		if err != nil {
 			return err
 		}
@@ -89,7 +89,7 @@ func (h *G3BaseHandler) Cp(filepath string, description string) error {
 			GistPath: gistData.Url,
 		}
 
-		err = h.DataService.AppendEntry(g3unit.G3Filepath, []fsdata.GistEntry{gistEntry})
+		err = h.DataService.AppendEntry(g3unit, []fsdata.GistEntry{gistEntry})
 		if err != nil {
 			return err
 		}

@@ -7,6 +7,7 @@ import (
 
 	"github.com/jegj/g3/config"
 	"github.com/jegj/g3/fsdata"
+	"github.com/jegj/g3/g3unit"
 	"github.com/jegj/g3/github"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -26,9 +27,11 @@ func TestCp_ErrorGetFileSize(t *testing.T) {
 		GithubService: mockGistProvider,
 		DataService:   mockDataProvider,
 	}
-	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(0), errors.New("file not found"))
+	inputFilePath := "/tmp/backup_25_03_2025.tar.gz"
+	unit := g3unit.NewG3Unit(inputFilePath, cfg)
+	mockDataProvider.On("GetFileSize", unit).Return(int64(0), errors.New("file not found"))
 
-	err := g3handler.Cp("/tmp/backup_25_03_2025.tar.gz", "Small backup file")
+	err := g3handler.Cp(inputFilePath, "Small backup file")
 
 	assert.Error(t, err)
 	mockDataProvider.AssertExpectations(t)
@@ -42,40 +45,16 @@ func TestCp_ErrorGetFileContent(t *testing.T) {
 		GithubService: mockGistProvider,
 		DataService:   mockDataProvider,
 	}
-	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
-	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return([]byte{}, errors.New("could not read the file"))
+	inputFilePath := "/tmp/backup_25_03_2025.tar.gz"
+	unit := g3unit.NewG3Unit(inputFilePath, cfg)
+	mockDataProvider.On("GetFileSize", unit).Return(int64(500), nil)
+	mockDataProvider.On("GetFileContent", unit).Return([]byte{}, errors.New("could not read the file"))
 
-	err := g3handler.Cp("/tmp/backup_25_03_2025.tar.gz", "Small backup file")
-
-	assert.Error(t, err)
-	mockDataProvider.AssertExpectations(t)
-}
-
-/*
-func TestCp_ErrorGetG3Filepath(t *testing.T) {
-	content := []byte{
-		0x1F, 0x2A, 0x3C, 0x4D, 0x5E, 0x6F, 0x7A, 0x8B,
-		0x9C, 0xAD, 0xBE, 0xCF, 0xD1, 0xE2, 0xF3, 0x04,
-		0x15, 0x26, 0x37, 0x48, 0x59, 0x6A, 0x7B, 0x8C,
-		0x9D, 0xAE, 0xBF, 0xC0, 0xD2, 0xE3, 0xF4, 0x05,
-	}
-	mockGistProvider := new(github.MockGistProvider)
-	mockDataProvider := new(fsdata.MockDataProvider)
-	g3handler := G3BaseHandler{
-		cfg:           cfg,
-		GithubService: mockGistProvider,
-		DataService:   mockDataProvider,
-	}
-	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
-	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("", errors.New("could not get the g3 filepath"))
-
-	err := g3handler.Cp("/tmp/backup_25_03_2025.tar.gz", "Small backup file")
+	err := g3handler.Cp(inputFilePath, "Small backup file")
 
 	assert.Error(t, err)
 	mockDataProvider.AssertExpectations(t)
 }
-*/
 
 func TestCp_ErrorCreateGist(t *testing.T) {
 	content := []byte{
@@ -92,13 +71,14 @@ func TestCp_ErrorCreateGist(t *testing.T) {
 		GithubService: mockGistProvider,
 		DataService:   mockDataProvider,
 	}
-	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
-	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
-	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(false)
+	inputFilePath := "/tmp/backup_25_03_2025.tar.gz"
+	unit := g3unit.NewG3Unit(inputFilePath, cfg)
+	mockDataProvider.On("GetFileSize", unit).Return(int64(500), nil)
+	mockDataProvider.On("GetFileContent", unit).Return(content, nil)
+	mockDataProvider.On("HasEntry", unit).Return(false)
 	mockGistProvider.On("CreateGist", description, mock.Anything, true).Return(&github.GistResponse{}, errors.New("could not create gist"))
 
-	err := g3handler.Cp("/tmp/backup_25_03_2025.tar.gz", description)
+	err := g3handler.Cp(inputFilePath, description)
 
 	assert.Error(t, err)
 	mockDataProvider.AssertExpectations(t)
@@ -120,6 +100,8 @@ func TestCp_ErrorAppendEntry(t *testing.T) {
 		GithubService: mockGistProvider,
 		DataService:   mockDataProvider,
 	}
+	inputFilePath := "/tmp/backup_25_03_2025.tar.gz"
+	unit := g3unit.NewG3Unit(inputFilePath, cfg)
 	githubResponse := &github.GistResponse{
 		Url:       "https://api.github.com/gists/88dfea43e4262d04557b01c0cfc3c7ba",
 		Id:        "88dfea43e4262d04557b01c0cfc3c7ba",
@@ -142,12 +124,11 @@ func TestCp_ErrorAppendEntry(t *testing.T) {
 		ID:       githubResponse.Id,
 		GistPath: githubResponse.Url,
 	}
-	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
-	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
-	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(false)
+	mockDataProvider.On("GetFileSize", unit).Return(int64(500), nil)
+	mockDataProvider.On("GetFileContent", unit).Return(content, nil)
+	mockDataProvider.On("HasEntry", unit).Return(false)
 	mockGistProvider.On("CreateGist", description, mock.Anything, true).Return(githubResponse, nil)
-	mockDataProvider.On("AppendEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
+	mockDataProvider.On("AppendEntry", unit, []fsdata.GistEntry{
 		gistEntry,
 	}).Return(errors.New("could not append entry"))
 
@@ -173,6 +154,8 @@ func TestCp_SuccessOneFileNoOverride(t *testing.T) {
 		GithubService: mockGistProvider,
 		DataService:   mockDataProvider,
 	}
+	inputFilePath := "/tmp/backup_25_03_2025.tar.gz"
+	unit := g3unit.NewG3Unit(inputFilePath, cfg)
 	githubResponse := &github.GistResponse{
 		Url:       "https://api.github.com/gists/88dfea43e4262d04557b01c0cfc3c7ba",
 		Id:        "88dfea43e4262d04557b01c0cfc3c7ba",
@@ -195,16 +178,15 @@ func TestCp_SuccessOneFileNoOverride(t *testing.T) {
 		ID:       githubResponse.Id,
 		GistPath: githubResponse.Url,
 	}
-	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
-	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
-	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(false)
+	mockDataProvider.On("GetFileSize", unit).Return(int64(500), nil)
+	mockDataProvider.On("GetFileContent", unit).Return(content, nil)
+	mockDataProvider.On("HasEntry", unit).Return(false)
 	mockGistProvider.On("CreateGist", description, mock.Anything, true).Return(githubResponse, nil)
-	mockDataProvider.On("AppendEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
+	mockDataProvider.On("AppendEntry", unit, []fsdata.GistEntry{
 		gistEntry,
 	}).Return(nil)
 
-	err := g3handler.Cp("/tmp/backup_25_03_2025.tar.gz", description)
+	err := g3handler.Cp(inputFilePath, description)
 
 	assert.NoError(t, err)
 	mockDataProvider.AssertExpectations(t)
@@ -226,13 +208,14 @@ func TestCp_ErrorGettingEntryOnFileOverride(t *testing.T) {
 		GithubService: mockGistProvider,
 		DataService:   mockDataProvider,
 	}
-	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
-	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
-	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(true)
-	mockDataProvider.On("GetEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(fsdata.DataEntry{}, errors.New("failed to load file"))
+	inputFilePath := "/tmp/backup_25_03_2025.tar.gz"
+	unit := g3unit.NewG3Unit(inputFilePath, cfg)
+	mockDataProvider.On("GetFileSize", unit).Return(int64(500), nil)
+	mockDataProvider.On("GetFileContent", unit).Return(content, nil)
+	mockDataProvider.On("HasEntry", unit).Return(true)
+	mockDataProvider.On("GetEntry", unit).Return(fsdata.DataEntry{}, errors.New("failed to load file"))
 
-	err := g3handler.Cp("/tmp/backup_25_03_2025.tar.gz", description)
+	err := g3handler.Cp(inputFilePath, description)
 
 	assert.Error(t, err)
 	mockDataProvider.AssertExpectations(t)
@@ -253,6 +236,8 @@ func TestCp_ErrorUpdateGistOverride(t *testing.T) {
 		GithubService: mockGistProvider,
 		DataService:   mockDataProvider,
 	}
+	inputFilePath := "/tmp/backup_25_03_2025.tar.gz"
+	unit := g3unit.NewG3Unit(inputFilePath, cfg)
 	dataEntry := fsdata.DataEntry{
 		CreatedAt: time.Now(),
 		Gist: []fsdata.GistEntry{
@@ -262,14 +247,13 @@ func TestCp_ErrorUpdateGistOverride(t *testing.T) {
 			},
 		},
 	}
-	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
-	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
-	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(true)
-	mockDataProvider.On("GetEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(dataEntry, nil)
+	mockDataProvider.On("GetFileSize", unit).Return(int64(500), nil)
+	mockDataProvider.On("GetFileContent", unit).Return(content, nil)
+	mockDataProvider.On("HasEntry", unit).Return(true)
+	mockDataProvider.On("GetEntry", unit).Return(dataEntry, nil)
 	mockGistProvider.On("UpdateGist", "2decf6c462d9b4418f2", description, mock.Anything, true).Return(&github.GistResponse{}, errors.New("failed to update gist"))
 
-	err := g3handler.Cp("/tmp/backup_25_03_2025.tar.gz", description)
+	err := g3handler.Cp(inputFilePath, description)
 
 	assert.Error(t, err)
 	mockDataProvider.AssertExpectations(t)
@@ -290,6 +274,8 @@ func TestCp_ErrorAppendEntryOverride(t *testing.T) {
 		GithubService: mockGistProvider,
 		DataService:   mockDataProvider,
 	}
+	inputFilePath := "/tmp/backup_25_03_2025.tar.gz"
+	unit := g3unit.NewG3Unit(inputFilePath, cfg)
 	dataEntry := fsdata.DataEntry{
 		CreatedAt: time.Now(),
 		Gist: []fsdata.GistEntry{
@@ -321,17 +307,16 @@ func TestCp_ErrorAppendEntryOverride(t *testing.T) {
 		ID:       githubResponse.Id,
 		GistPath: githubResponse.Url,
 	}
-	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
-	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
-	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(true)
-	mockDataProvider.On("GetEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(dataEntry, nil)
+	mockDataProvider.On("GetFileSize", unit).Return(int64(500), nil)
+	mockDataProvider.On("GetFileContent", unit).Return(content, nil)
+	mockDataProvider.On("HasEntry", unit).Return(true)
+	mockDataProvider.On("GetEntry", unit).Return(dataEntry, nil)
 	mockGistProvider.On("UpdateGist", "2decf6c462d9b4418f2", description, mock.Anything, true).Return(githubResponse, nil)
-	mockDataProvider.On("UpdateEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
+	mockDataProvider.On("UpdateEntry", unit, []fsdata.GistEntry{
 		gistEntry,
 	}).Return(errors.New("could not append entry"))
 
-	err := g3handler.Cp("/tmp/backup_25_03_2025.tar.gz", description)
+	err := g3handler.Cp(inputFilePath, description)
 
 	assert.Error(t, err)
 	mockDataProvider.AssertExpectations(t)
@@ -352,6 +337,8 @@ func TestCp_SuccessOverride(t *testing.T) {
 		GithubService: mockGistProvider,
 		DataService:   mockDataProvider,
 	}
+	inputFilePath := "/tmp/backup_25_03_2025.tar.gz"
+	unit := g3unit.NewG3Unit(inputFilePath, cfg)
 	dataEntry := fsdata.DataEntry{
 		CreatedAt: time.Now(),
 		Gist: []fsdata.GistEntry{
@@ -383,17 +370,16 @@ func TestCp_SuccessOverride(t *testing.T) {
 		ID:       githubResponse.Id,
 		GistPath: githubResponse.Url,
 	}
-	mockDataProvider.On("GetFileSize", "/tmp/backup_25_03_2025.tar.gz").Return(int64(500), nil)
-	mockDataProvider.On("GetFileContent", "/tmp/backup_25_03_2025.tar.gz").Return(content, nil)
-	// mockDataProvider.On("GetG3Filepath", "backup_25_03_2025.tar.gz").Return("/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", nil)
-	mockDataProvider.On("HasEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(true)
-	mockDataProvider.On("GetEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json").Return(dataEntry, nil)
+	mockDataProvider.On("GetFileSize", unit).Return(int64(500), nil)
+	mockDataProvider.On("GetFileContent", unit).Return(content, nil)
+	mockDataProvider.On("HasEntry", unit).Return(true)
+	mockDataProvider.On("GetEntry", unit).Return(dataEntry, nil)
 	mockGistProvider.On("UpdateGist", "2decf6c462d9b4418f2", description, mock.Anything, true).Return(githubResponse, nil)
-	mockDataProvider.On("UpdateEntry", "/home/testy/.local/share/g3/files/backup_25_03_2025.tar.gz.g3.json", []fsdata.GistEntry{
+	mockDataProvider.On("UpdateEntry", unit, []fsdata.GistEntry{
 		gistEntry,
 	}).Return(nil)
 
-	err := g3handler.Cp("/tmp/backup_25_03_2025.tar.gz", description)
+	err := g3handler.Cp(inputFilePath, description)
 
 	assert.NoError(t, err)
 	mockDataProvider.AssertExpectations(t)

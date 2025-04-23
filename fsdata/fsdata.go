@@ -8,19 +8,20 @@ import (
 	"time"
 
 	"github.com/jegj/g3/config"
+	"github.com/jegj/g3/g3unit"
 )
 
 var ErrEntryNotFound = errors.New("entry not found")
 
 type DataProvider interface {
-	AppendEntry(filename string, gists []GistEntry) error
-	UpdateEntry(filename string, gists []GistEntry) error
-	DeleteEntry(filename string) error
+	AppendEntry(unit g3unit.G3Unit, gists []GistEntry) error
+	UpdateEntry(unit g3unit.G3Unit, gists []GistEntry) error
+	DeleteEntry(unit g3unit.G3Unit) error
 	GetEntries() ([]string, error)
-	GetFileSize(absFilePath string) (int64, error)
-	GetFileContent(absFilePath string) ([]byte, error)
-	GetEntry(filename string) (DataEntry, error)
-	HasEntry(filename string) bool
+	GetFileSize(unit g3unit.G3Unit) (int64, error)
+	GetFileContent(unit g3unit.G3Unit) ([]byte, error)
+	GetEntry(unit g3unit.G3Unit) (DataEntry, error)
+	HasEntry(unit g3unit.G3Unit) bool
 }
 
 type FSDataService struct {
@@ -33,8 +34,8 @@ func NewDatatService(cfg config.Config) FSDataService {
 	}
 }
 
-func (d FSDataService) GetFileSize(absFilePath string) (int64, error) {
-	info, err := os.Stat(absFilePath)
+func (d FSDataService) GetFileSize(unit g3unit.G3Unit) (int64, error) {
+	info, err := os.Stat(unit.Filepath)
 	if err != nil {
 		return 0, err
 	} else {
@@ -42,12 +43,12 @@ func (d FSDataService) GetFileSize(absFilePath string) (int64, error) {
 	}
 }
 
-func (d FSDataService) GetFileContent(absFilePath string) ([]byte, error) {
-	return os.ReadFile(absFilePath)
+func (d FSDataService) GetFileContent(unit g3unit.G3Unit) ([]byte, error) {
+	return os.ReadFile(unit.Filepath)
 }
 
-func (d FSDataService) AppendEntry(filename string, gists []GistEntry) (err error) {
-	file, err := os.OpenFile(filename, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+func (d FSDataService) AppendEntry(unit g3unit.G3Unit, gists []GistEntry) (err error) {
+	file, err := os.OpenFile(unit.G3Filepath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
@@ -71,16 +72,16 @@ func (d FSDataService) AppendEntry(filename string, gists []GistEntry) (err erro
 	return err
 }
 
-func (d FSDataService) DeleteEntry(filename string) error {
-	err := os.Remove(filename)
+func (d FSDataService) DeleteEntry(unit g3unit.G3Unit) error {
+	err := os.Remove(unit.G3Filepath)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (d FSDataService) UpdateEntry(filename string, gists []GistEntry) (err error) {
-	file, err := os.OpenFile(filename, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+func (d FSDataService) UpdateEntry(unit g3unit.G3Unit, gists []GistEntry) (err error) {
+	file, err := os.OpenFile(unit.G3Filepath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
@@ -125,8 +126,8 @@ func (d FSDataService) GetEntries() ([]string, error) {
 	return filenames, nil
 }
 
-func (d FSDataService) GetEntry(g3filepath string) (DataEntry, error) {
-	data, err := os.ReadFile(g3filepath)
+func (d FSDataService) GetEntry(unit g3unit.G3Unit) (DataEntry, error) {
+	data, err := os.ReadFile(unit.G3Filepath)
 	if err != nil {
 		return DataEntry{}, err
 	}
@@ -139,7 +140,7 @@ func (d FSDataService) GetEntry(g3filepath string) (DataEntry, error) {
 	return dataEntry, nil
 }
 
-func (d FSDataService) HasEntry(g3filepath string) bool {
-	_, err := os.Stat(g3filepath)
+func (d FSDataService) HasEntry(unit g3unit.G3Unit) bool {
+	_, err := os.Stat(unit.G3Filepath)
 	return !os.IsNotExist(err)
 }

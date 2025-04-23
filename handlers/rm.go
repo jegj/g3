@@ -11,7 +11,7 @@ import (
 // TODO: Parallel delete calls when the file contains more than one gist
 func (h *G3BaseHandler) Rm(filename string) error {
 	g3unit := g3unit.NewG3Unit(filename, h.cfg)
-	content, err := h.DataService.GetFileContent(g3unit.G3Filepath)
+	content, err := h.DataService.GetFileContent(g3unit)
 	if err != nil {
 		return err
 	}
@@ -29,7 +29,7 @@ func (h *G3BaseHandler) Rm(filename string) error {
 		}
 	}
 
-	err = h.DataService.DeleteEntry(g3unit.G3Filepath)
+	err = h.DataService.DeleteEntry(g3unit)
 	if err != nil {
 		return err
 	}
