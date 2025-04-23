@@ -18,7 +18,7 @@ func (h *G3BaseHandler) IsOverrindingFile(filepath string) bool {
 // TODO: add checksum for each file/part to avoid upload the same chunk from the file
 func (h *G3BaseHandler) Cp(filepath string, description string) error {
 	g3unit := g3unit.NewG3Unit(filepath, h.cfg)
-	filename := fsdata.GetFileName(filepath)
+	filename := g3unit.Filename
 
 	size, err := h.DataService.GetFileSize(filepath)
 	if err != nil {
