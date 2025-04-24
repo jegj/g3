@@ -50,7 +50,7 @@ func cp(cmd *cobra.Command, args []string) error {
 	isOverrindingFile := handler.IsOverrindingFile(filename)
 	if isOverrindingFile {
 		var response string
-		fmt.Print("There is file with the same name in your storage.Are you sure you want to override the file? (y/n):")
+		fmt.Print("There is file with the same name in your storage. Are you sure you want to override the file? (y/n):")
 		_, err := fmt.Scanln(&response)
 		if err != nil {
 			return err
