@@ -33,5 +33,5 @@ I can use the limit above to split the file in two categories:
 
 ### For files bigger than 3GB
 
-1. Use more than one gist and split in chunks of 10MB. 
+1. Use more than one gist and split in chunks of 10MB.
 2. When file count is more than 300, use a new gist
