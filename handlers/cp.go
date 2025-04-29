@@ -15,7 +15,6 @@ func (h *G3BaseHandler) IsOverrindingFile(inputFilePath string) bool {
 
 // TODO: partition file if required
 // TODO: sync more than one data file
-// TODO: add checksum for each file/part to avoid upload the same chunk from the file
 func (h *G3BaseHandler) Cp(inputFilePath string, description string) error {
 	g3unit := g3unit.NewG3Unit(inputFilePath, h.cfg)
 	filename := g3unit.Filename
