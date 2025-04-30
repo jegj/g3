@@ -8,9 +8,9 @@ import (
 )
 
 const (
-	ChunkSize   = 3 * 1024 * 1024 * 1024 // 3GB chunks
-	BufferSize  = 32 * 1024 * 1024       // 32MB buffer
-	WorkerCount = 4                      // Number of concurrent workers
+	ChunkSize   = 10 * 1024 * 1024 // 10MB chunks
+	BufferSize  = 32 * 1024 * 1024 // 32MB buffer
+	WorkerCount = 4                // Number of concurrent workers
 )
 
 type FChunk struct {
@@ -19,6 +19,7 @@ type FChunk struct {
 }
 
 func SplitFileConcurrent(inputPath string) error {
+	fmt.Println("Splitting file", inputPath)
 	file, err := os.Open(inputPath)
 	if err != nil {
 		return err
@@ -82,10 +83,7 @@ func reader(file *os.File, chunkChan chan<- FChunk) error {
 
 		remaining := buf[:n]
 		for len(remaining) > 0 {
-			available := ChunkSize - len(currentChunk)
-			if available > len(remaining) {
-				available = len(remaining)
-			}
+			available := min(ChunkSize-len(currentChunk), len(remaining))
 
 			currentChunk = append(currentChunk, remaining[:available]...)
 			remaining = remaining[available:]
@@ -110,6 +108,7 @@ func reader(file *os.File, chunkChan chan<- FChunk) error {
 func worker(basePath string, chunkChan <-chan FChunk, errChan chan<- error) {
 	for chunk := range chunkChan {
 		chunkPath := fmt.Sprintf("%s.part%d", basePath, chunk.Number)
+		fmt.Println("Writing chunk to", chunkPath)
 		if err := os.WriteFile(chunkPath, chunk.Data, 0644); err != nil {
 			select {
 			case errChan <- fmt.Errorf("failed to write chunk %d: %w", chunk.Number, err):
