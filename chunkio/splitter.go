@@ -9,14 +9,9 @@ import (
 
 const (
 	ChunkSize   = 10 * 1024 * 1024 // 10MB chunks
-	BufferSize  = 32 * 1024 * 1024 // 32MB buffer
+	BufferSize  = 5 * 1024 * 1024  // 32MB buffer
 	WorkerCount = 4                // Number of concurrent workers
 )
-
-type FChunk struct {
-	Number int
-	Data   []byte
-}
 
 func SplitFileConcurrent(inputPath string) error {
 	fmt.Println("Splitting file", inputPath)
@@ -24,10 +19,14 @@ func SplitFileConcurrent(inputPath string) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func() {
+		if cerr := file.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
+	}()
 
 	// Worker pool pattern
-	chunkChan := make(chan FChunk, WorkerCount)
+	chunkChan := make(chan Fragment, WorkerCount)
 	errChan := make(chan error, 1)
 	doneChan := make(chan struct{})
 	var wg sync.WaitGroup
@@ -67,7 +66,7 @@ func SplitFileConcurrent(inputPath string) error {
 	}
 }
 
-func reader(file *os.File, chunkChan chan<- FChunk) error {
+func reader(file *os.File, chunkChan chan<- Fragment) error {
 	buf := make([]byte, BufferSize)
 	chunkNum := 0
 	currentChunk := make([]byte, 0, ChunkSize)
@@ -93,7 +92,7 @@ func reader(file *os.File, chunkChan chan<- FChunk) error {
 				chunkData := make([]byte, len(currentChunk))
 				copy(chunkData, currentChunk)
 
-				chunkChan <- FChunk{
+				chunkChan <- Fragment{
 					Number: chunkNum,
 					Data:   chunkData,
 				}
@@ -105,7 +104,7 @@ func reader(file *os.File, chunkChan chan<- FChunk) error {
 	return nil
 }
 
-func worker(basePath string, chunkChan <-chan FChunk, errChan chan<- error) {
+func worker(basePath string, chunkChan <-chan Fragment, errChan chan<- error) {
 	for chunk := range chunkChan {
 		chunkPath := fmt.Sprintf("%s.part%d", basePath, chunk.Number)
 		fmt.Println("Writing chunk to", chunkPath)
