@@ -9,15 +9,20 @@ import (
 
 const (
 	ChunkSize   = 10 * 1024 * 1024 // 10MB chunks
-	BufferSize  = 5 * 1024 * 1024  // 32MB buffer
+	BufferSize  = 5 * 1024 * 1024  // 5MB buffer
 	WorkerCount = 4                // Number of concurrent workers
 )
 
-func SplitFileConcurrent(inputPath string) error {
+var (
+	globalContent = Content{}
+	contentMutex  sync.RWMutex
+)
+
+func SplitFileConcurrent(inputPath string) (*Content, error) {
 	fmt.Println("Splitting file", inputPath)
 	file, err := os.Open(inputPath)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer func() {
 		if cerr := file.Close(); cerr != nil && err == nil {
@@ -36,7 +41,7 @@ func SplitFileConcurrent(inputPath string) error {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			worker(inputPath, chunkChan, errChan)
+			worker(inputPath, chunkChan)
 		}()
 	}
 
@@ -60,9 +65,9 @@ func SplitFileConcurrent(inputPath string) error {
 	// Wait for completion or error
 	select {
 	case err := <-errChan:
-		return err
+		return nil, err
 	case <-doneChan:
-		return nil
+		return &globalContent, nil
 	}
 }
 
@@ -104,16 +109,21 @@ func reader(file *os.File, chunkChan chan<- Fragment) error {
 	return nil
 }
 
-func worker(basePath string, chunkChan <-chan Fragment, errChan chan<- error) {
-	for chunk := range chunkChan {
-		chunkPath := fmt.Sprintf("%s.part%d", basePath, chunk.Number)
-		fmt.Println("Writing chunk to", chunkPath)
-		if err := os.WriteFile(chunkPath, chunk.Data, 0644); err != nil {
-			select {
-			case errChan <- fmt.Errorf("failed to write chunk %d: %w", chunk.Number, err):
-			default:
+func worker(basePath string, chunkChan <-chan Fragment) {
+	for fragment := range chunkChan {
+		chunkPath := fmt.Sprintf("%s.part%d", basePath, fragment.Number)
+		fmt.Println("Adding fragment", chunkPath)
+		contentMutex.Lock()
+		globalContent.Fragments = append(globalContent.Fragments, fragment)
+		contentMutex.Unlock()
+		/*
+			if err := os.WriteFile(chunkPath, chunk.Data, 0644); err != nil {
+				select {
+				case errChan <- fmt.Errorf("failed to write chunk %d: %w", chunk.Number, err):
+				default:
+				}
+				return
 			}
-			return
-		}
+		*/
 	}
 }
