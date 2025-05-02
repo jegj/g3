@@ -3,18 +3,10 @@
 // and reassembling them later.
 package chunkio
 
-// A file can be splitted into several chunks(gist)
-// if the file is too large( more than 3GB in size)
-// Each chunk represents a Gist entry in Github API
+// Content can be splitted into several fragments
+// Depending of the Fragments length( 300 files of 10MB), we can redefine
+// this structure as several Gists
 type Content struct {
-	Chunks []Chunk
-}
-
-// Each Chunk(Gist) can be splitted into several fragments(Files)
-// when the chunk is too large(more than 10MB).
-// A chunk can only contain a max number of 300 Fragments
-// Making possible to store a 3GB file in single Gist
-type Chunk struct {
 	Fragments []Fragment
 }
 
