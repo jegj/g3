@@ -18,6 +18,7 @@ var (
 	contentMutex  sync.RWMutex
 )
 
+// TODO: Check whyt number chunks does not match file size
 func SplitFileConcurrent(inputPath string) (*Content, error) {
 	fmt.Println("Splitting file", inputPath)
 	file, err := os.Open(inputPath)
