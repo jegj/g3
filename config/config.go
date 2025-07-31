@@ -1,3 +1,4 @@
+// Package config provides functionality to load, validate, and manage configuration settings for the application.
 package config
 
 import (
@@ -9,7 +10,7 @@ import (
 
 var Conf Config
 
-const DEFAULT_CONFIG_FILENAME = "config.json"
+const DefaultConfigFilename = "config.json"
 
 type Config struct {
 	GHToken    string `json:"GITHUB_TOKEN"`

@@ -76,7 +76,7 @@ func initConfig() {
 			slog.Error(err.Error())
 			os.Exit(1)
 		}
-		configFile = filepath.Join(dir, config.DEFAULT_CONFIG_FILENAME)
+		configFile = filepath.Join(dir, config.DefaultConfigFilename)
 	}
 
 	if err := config.Conf.Load(configFile); err != nil {
