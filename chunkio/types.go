@@ -10,9 +10,11 @@ type Content struct {
 	Fragments []Fragment
 }
 
-// Each fragment represents a file inside a single Gist
+// Fragment represents a file inside a single Gist
 // and has a size limit of 10 MB
 type Fragment struct {
-	Number int
-	Data   []byte
+	Number   int
+	Filepath string
 }
+
+type ChunkProcessor func(chunk []byte, chunkIndex int) error
