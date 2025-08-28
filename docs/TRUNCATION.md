@@ -6,16 +6,16 @@ Per [Gist API](https://docs.github.com/en/rest/gists/gists?apiVersion=2022-11-28
 there are some limitations regarding files content and number:
 
 - Each file inside a Gist can be returned by the API in the
-`content` property if its content is up to 1MB.
+  `content` property if its content is up to 1MB.
 
 - For bigger files, the property `truncated` will be true and
-the only way to get the content is through `raw_url`.
-Be aware that for files larger than 10MB the only property
-available for get the content is `git_pull_url`
+  the only way to get the content is through `raw_url`.
+  Be aware that for files larger than 10MB the only property
+  available for get the content is `git_pull_url`
 
 - Also, the entire list of files in the Gist can be truncated
-if the total number exceeds 300 files. Again the only possible
-way to get the whole content is using `git_pull_url`
+  if the total number exceeds 300 files. Again the only possible
+  way to get the whole content is using `git_pull_url`
 
 ## Approach
 

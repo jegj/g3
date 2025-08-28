@@ -25,12 +25,12 @@ for hitting the Github API per key
 ```
 
 - `GITHUB_TOKEN`: A personal access token (PAT) used to authenticate requests
-to the GitHub API. This token should have the necessary permissions to
-read and write gists.
+  to the GitHub API. This token should have the necessary permissions to
+  read and write gists.
 
 - `AES_KEY`: A 32-byte encryption key used for AES-256 encryption and
-decryption of stored data. This key ensures that sensitive information
-remains secure. Keep this key private and do not share it.
+  decryption of stored data. This key ensures that sensitive information
+  remains secure. Keep this key private and do not share it.
 
 ## Usage
 
