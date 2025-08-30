@@ -11,20 +11,29 @@ yargs(argv)
   .command({
     command: "ls",
     describe: "Show all the files in your storage",
+    builder: (yargs) => {
+      return yargs
+        .usage("$0 ls")
+        .example("$0 ls", "List all files in your storage")
+        .epilog("Lists all files stored in your configured storage location");
+    },
     handler: () => {
       console.log("ls command");
     },
   })
   .command({
-    command: "cp <source> [destination]",
-    describe: "Copy a file to your storage",
+    command: "cp <file>",
+    describe:
+      "Copy a file to your storage. If the file exists, it will be overwritten.",
     builder: (yargs) => {
       return yargs
-        .positional("source", { describe: "Source file path", type: "string" })
-        .positional("destination", {
-          describe: "Destination name (optional)",
-          type: "string",
-        });
+        .positional("file", { describe: "Source file path", type: "string" })
+        .usage("$0 cp <source>")
+        .example(
+          "$0 cp ./myfile.txt",
+          "Copy myfile.txt to storage with same name",
+        )
+        .epilog("The file will be saved to your configured storage location");
     },
     handler: (argv) => {
       console.log(
@@ -34,12 +43,18 @@ yargs(argv)
   })
   .command({
     command: "get <file>",
-    describe: "Retrieve a file from your storage",
+    describe: "Get file from your storage",
     builder: (yargs) => {
-      return yargs.positional("file", {
-        describe: "File to retrieve",
-        type: "string",
-      });
+      return yargs
+        .positional("file", {
+          describe: "File to retrieve",
+          type: "string",
+        })
+        .usage("$0 get <file>")
+        .example("$0 get myfile.txt", "Retrieve myfile.txt from storage")
+        .epilog(
+          "The file will be retrieved from your configured storage location",
+        );
     },
     handler: (argv) => {
       console.log(`get command: retrieving ${argv.file}`);
@@ -47,12 +62,18 @@ yargs(argv)
   })
   .command({
     command: "rm <file>",
-    describe: "Remove a file from your storage",
+    describe: "Delete file from your storage",
     builder: (yargs) => {
-      return yargs.positional("file", {
-        describe: "File to remove",
-        type: "string",
-      });
+      return yargs
+        .positional("file", {
+          describe: "File to remove",
+          type: "string",
+        })
+        .usage("$0 rm <file>")
+        .example("$0 rm myfile.txt", "Remove myfile.txt from storage")
+        .epilog(
+          "The file will be removed from your configured storage location",
+        );
     },
     handler: (argv) => {
       console.log(`rm command: removing ${argv.file}`);
