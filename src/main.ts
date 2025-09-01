@@ -8,6 +8,13 @@ yargs(argv)
   .scriptName("g3")
   .version()
   .help()
+  .option("verbose", {
+    alias: "v",
+    type: "boolean",
+    description: "Show debug logging",
+    default: false,
+    global: true,
+  })
   .command({
     command: "ls",
     describe: "Show all the files in your storage",
@@ -17,7 +24,8 @@ yargs(argv)
         .example("$0 ls", "List all files in your storage")
         .epilog("Lists all files stored in your configured storage location");
     },
-    handler: () => {
+    handler: (argv) => {
+      console.log("Verbose mode is ", argv.verbose);
       console.log("ls command");
     },
   })
