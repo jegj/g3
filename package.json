@@ -19,10 +19,10 @@
   },
   "scripts": {
     "dev": "ts-node -r tsconfig-paths/register src/main.ts",
+    "test": "node --import tsx --test test/**/*.spec.ts",
     "eslint-check-only": "npx eslint .",
     "eslint-fix": "npx eslint . --fix",
-    "prettier": "npx prettier --write .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prettier": "npx prettier --write ."
   },
   "dependencies": {
     "yargs": "^18.0.0"
@@ -40,6 +40,7 @@
     "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.5",
     "typescript-eslint": "^8.41.0"
   }
 }
