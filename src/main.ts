@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
+import { DEFAULT_CONFIG_FILEPATH, parseG3Config } from "./config";
+import ls from "./cmd/ls";
 
 const argv = hideBin(process.argv);
 
@@ -15,6 +17,28 @@ yargs(argv)
     default: false,
     global: true,
   })
+  .option("config", {
+    alias: "c",
+    type: "string",
+    description: "Path to config file",
+    default: DEFAULT_CONFIG_FILEPATH,
+    global: true,
+  })
+  .middleware((argv) => {
+    try {
+      const config = parseG3Config(argv.config as string);
+      argv.GITHUB_TOKEN = config.GITHUB_TOKEN;
+      argv.AES_KEY = config.AES_KEY;
+    } catch (error) {
+      if (argv.verbose) {
+        console.error("Error loading config:", error);
+      }
+      console.error(
+        `Failed to load config file at ${argv.config}. Check if your configuration file exists and is valid JSON.`,
+      );
+      process.exit(1);
+    }
+  })
   .command({
     command: "ls",
     describe: "Show all the files in your storage",
@@ -24,9 +48,8 @@ yargs(argv)
         .example("$0 ls", "List all files in your storage")
         .epilog("Lists all files stored in your configured storage location");
     },
-    handler: (argv) => {
-      console.log("Verbose mode is ", argv.verbose);
-      console.log("ls command");
+    handler: async (argv) => {
+      await ls(argv);
     },
   })
   .command({
