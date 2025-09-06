@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import { DEFAULT_CONFIG_FILEPATH, parseG3Config } from "./config";
+import {
+  createDataFile,
+  DEFAULT_CONFIG_FILEPATH,
+  parseG3Config,
+} from "./config";
 import ls from "./cmd/ls";
 
 const argv = hideBin(process.argv);
@@ -29,6 +33,10 @@ yargs(argv)
       const config = parseG3Config(argv.config as string);
       argv.GITHUB_TOKEN = config.GITHUB_TOKEN;
       argv.AES_KEY = config.AES_KEY;
+      createDataFile(argv.verbose as boolean);
+      if (argv.verbose) {
+        console.log("Config loaded successfully:", config);
+      }
     } catch (error) {
       if (argv.verbose) {
         console.error("Error loading config:", error);

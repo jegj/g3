@@ -11,7 +11,7 @@ export const DEFAULT_CONFIG_FILEPATH = path.join(
 );
 export const DEFAULT_DATA_FILEPATH = path.join(
   HOME_DIR,
-  ".local/share/g3/data.json",
+  ".local/share/g3/files/",
 );
 
 export const G3ConfigSchema = z.object({
@@ -40,4 +40,14 @@ function resolvePath(filePath: string): string {
 
 function validateG3Config(config: Partial<G3Config>): G3Config {
   return G3ConfigSchema.parse(config);
+}
+
+export function createDataFile(debugMode: boolean = false) {
+  const dir = resolvePath(path.dirname(DEFAULT_DATA_FILEPATH));
+  if (!fs.existsSync(dir)) {
+    if (debugMode) {
+      console.log(`Creating data directory at ${dir}`);
+    }
+    fs.mkdirSync(dir, { recursive: true });
+  }
 }
