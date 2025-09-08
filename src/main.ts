@@ -35,7 +35,7 @@ yargs(argv)
       argv.AES_KEY = config.AES_KEY;
       createDataFile(argv.verbose as boolean);
       if (argv.verbose) {
-        console.log("Config loaded successfully:", config);
+        console.log("Config loaded successfully");
       }
     } catch (error) {
       if (argv.verbose) {
