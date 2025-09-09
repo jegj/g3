@@ -5,6 +5,8 @@ import { z } from "zod";
 
 const HOME_DIR = os.homedir();
 
+export const CONFIG_KEYS = ["GITHUB_TOKEN", "AES_KEY"];
+
 export const DEFAULT_CONFIG_FILEPATH = path.join(
   HOME_DIR,
   ".config/g3/config.json",
@@ -42,12 +44,25 @@ function validateG3Config(config: Partial<G3Config>): G3Config {
   return G3ConfigSchema.parse(config);
 }
 
-export function createDataFile(debugMode: boolean = false) {
+export function createDataFile(verbose: boolean = false) {
   const dir = resolvePath(path.dirname(DEFAULT_DATA_FILEPATH));
   if (!fs.existsSync(dir)) {
-    if (debugMode) {
+    if (verbose) {
       console.log(`Creating data directory at ${dir}`);
     }
     fs.mkdirSync(dir, { recursive: true });
   }
+}
+
+export function createConfigFromArgv<T extends object>(
+  source: T,
+  keys: Array<keyof T>,
+): G3Config {
+  const config: Partial<T> = {};
+  keys.forEach((key) => {
+    if (source[key] !== undefined) {
+      config[key] = source[key];
+    }
+  });
+  return createG3Config(config);
 }
