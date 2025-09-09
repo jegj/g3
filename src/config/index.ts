@@ -54,14 +54,11 @@ export function createDataFile(verbose: boolean = false) {
   }
 }
 
-export function createConfigFromArgv<T extends object>(
-  source: T,
-  keys: Array<keyof T>,
-): G3Config {
+export function createConfigFromArgv<T extends object>(source: T): G3Config {
   const config: Partial<T> = {};
-  keys.forEach((key) => {
-    if (source[key] !== undefined) {
-      config[key] = source[key];
+  CONFIG_KEYS.forEach((key) => {
+    if (source[key as keyof T] !== undefined) {
+      config[key as keyof T] = source[key as keyof T];
     }
   });
   return createG3Config(config);
