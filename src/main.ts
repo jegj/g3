@@ -31,9 +31,8 @@ yargs(argv)
   .middleware((argv) => {
     try {
       const config = parseG3Config(argv.config as string);
-      argv.GITHUB_TOKEN = config.GITHUB_TOKEN;
-      argv.AES_KEY = config.AES_KEY;
-      createDataFile(argv.verbose as boolean);
+      Object.assign(argv, config);
+      createDataFile(config.DATA_FOLDER, argv.verbose as boolean);
       if (argv.verbose) {
         console.log("Config loaded successfully");
       }
