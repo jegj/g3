@@ -5,7 +5,7 @@ import { z } from "zod";
 
 const HOME_DIR = os.homedir();
 
-export const CONFIG_KEYS = ["GITHUB_TOKEN", "AES_KEY"];
+const CONFIG_KEYS = ["GITHUB_TOKEN", "AES_KEY"];
 
 export const DEFAULT_CONFIG_FILEPATH = path.join(
   HOME_DIR,
@@ -19,6 +19,10 @@ export const DEFAULT_DATA_FILEPATH = path.join(
 export const G3ConfigSchema = z.object({
   GITHUB_TOKEN: z.string().min(1, "GitHubToken is required"),
   AES_KEY: z.string().min(1, "AesKey is required"),
+  DATA_FOLDER: z
+    .string()
+    .transform((val) => (val?.trim() === "" ? undefined : val))
+    .default(DEFAULT_DATA_FILEPATH),
 });
 
 export type G3Config = z.infer<typeof G3ConfigSchema>;
@@ -44,8 +48,8 @@ function validateG3Config(config: Partial<G3Config>): G3Config {
   return G3ConfigSchema.parse(config);
 }
 
-export function createDataFile(verbose: boolean = false) {
-  const dir = resolvePath(path.dirname(DEFAULT_DATA_FILEPATH));
+export function createDataFile(dataFolder: string, verbose: boolean = false) {
+  const dir = resolvePath(path.dirname(dataFolder));
   if (!fs.existsSync(dir)) {
     if (verbose) {
       console.log(`Creating data directory at ${dir}`);
@@ -55,11 +59,5 @@ export function createDataFile(verbose: boolean = false) {
 }
 
 export function createConfigFromArgv<T extends object>(source: T): G3Config {
-  const config: Partial<T> = {};
-  CONFIG_KEYS.forEach((key) => {
-    if (source[key as keyof T] !== undefined) {
-      config[key as keyof T] = source[key as keyof T];
-    }
-  });
-  return createG3Config(config);
+  return createG3Config(source);
 }
