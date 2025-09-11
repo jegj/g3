@@ -29,10 +29,12 @@ yargs(argv)
     global: true,
   })
   .middleware((argv) => {
+    const configPath = argv.config as string;
+    const a = null + 7;
     try {
-      const config = parseG3Config(argv.config as string);
+      const config = parseG3Config(configPath);
       Object.assign(argv, config);
-      createDataFile(config.DATA_FOLDER, argv.verbose as boolean);
+      createDataFile(config.DATA_FOLDER, Boolean(argv.verbose));
       if (argv.verbose) {
         console.log("Config loaded successfully");
       }
@@ -41,7 +43,7 @@ yargs(argv)
         console.error("Error loading config:", error);
       }
       console.error(
-        `Failed to load config file at ${argv.config}. Check if your configuration file exists and is valid JSON.`,
+        `Failed to load config file at ${configPath}. Check if your configuration file exists and is valid JSON.`,
       );
       process.exit(1);
     }
