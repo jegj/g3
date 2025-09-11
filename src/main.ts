@@ -30,7 +30,6 @@ yargs(argv)
   })
   .middleware((argv) => {
     const configPath = argv.config as string;
-    const a = null + 7;
     try {
       const config = parseG3Config(configPath);
       Object.assign(argv, config);
