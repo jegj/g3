@@ -5,8 +5,6 @@ import { z } from "zod";
 
 const HOME_DIR = os.homedir();
 
-const CONFIG_KEYS = ["GITHUB_TOKEN", "AES_KEY"];
-
 export const DEFAULT_CONFIG_FILEPATH = path.join(
   HOME_DIR,
   ".config/g3/config.json",
