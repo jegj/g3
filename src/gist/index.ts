@@ -1,18 +1,14 @@
 import { request } from "undici";
-import {
-  GistCreateRequest,
-  GistDependecies,
-  GistFile,
-  GistResponse,
-} from "./types";
+import { GistCreateRequest, GistFile, GistResponse } from "./types";
 import { G3Config } from "../config";
+import { G3Dependecies } from "../types";
 
 const API_URL = "https://api.github.com/gists";
 const DEFAULT_GITHUB_VERSION = "2022-11-28";
 const DEFAULT_ACCEPT_HEADER = "application/vnd.github+json";
 
 export const createGist =
-  ({ config }: GistDependecies) =>
+  ({ config }: G3Dependecies) =>
   async (
     description: string,
     files: Record<string, GistFile>,

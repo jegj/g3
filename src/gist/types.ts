@@ -1,9 +1,3 @@
-import { G3Config } from "../config";
-
-export type GistDependecies = {
-  config: G3Config;
-};
-
 export type GistConfig = {
   description: string;
   public: boolean;
