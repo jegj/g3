@@ -7,6 +7,7 @@ import {
   parseG3Config,
 } from "./config";
 import ls from "./cmd/ls";
+import cp from "./cmd/cp";
 
 const argv = hideBin(process.argv);
 
@@ -74,10 +75,8 @@ yargs(argv)
         )
         .epilog("The file will be saved to your configured storage location");
     },
-    handler: (argv) => {
-      console.log(
-        `cp command: copying ${argv.source} to ${argv.destination || "default name"}`,
-      );
+    handler: async (argv) => {
+      await cp(argv);
     },
   })
   .command({
