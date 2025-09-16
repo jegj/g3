@@ -68,9 +68,15 @@ yargs(argv)
     builder: (yargs) => {
       return yargs
         .positional("file", { describe: "Source file path", type: "string" })
+        .option("description", {
+          alias: "d",
+          type: "string",
+          description: "A brief description of your file",
+        })
         .usage("$0 cp <source>")
         .example(
-          "$0 cp ./myfile.txt",
+          // eslint-disable-next-line quotes
+          '$0 cp ./myfile.txt -d "My importan file"',
           "Copy myfile.txt to storage with same name",
         )
         .epilog("The file will be saved to your configured storage location");
