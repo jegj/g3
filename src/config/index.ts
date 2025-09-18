@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 import { z } from "zod";
+import { resolvePath } from "../utils";
 
 const HOME_DIR = os.homedir();
 
@@ -33,13 +34,6 @@ export function parseG3Config(configPath: string): G3Config {
   const resolvedConfigPath = resolvePath(configPath);
   const content = JSON.parse(fs.readFileSync(resolvedConfigPath, "utf-8"));
   return createG3Config(content);
-}
-
-function resolvePath(filePath: string): string {
-  if (filePath.startsWith("~")) {
-    return path.join(os.homedir(), filePath.slice(1));
-  }
-  return path.resolve(filePath);
 }
 
 function validateG3Config(config: Partial<G3Config>): G3Config {
