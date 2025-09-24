@@ -2,9 +2,9 @@ import fs from "fs";
 import { stat } from "fs/promises";
 import { G3File } from "../g3file";
 
-export const getFileSize = async (g3File: G3File): Promise<number> => {
+export const getFileSizeMb = async (g3File: G3File): Promise<number> => {
   const stats = await fs.promises.stat(g3File.filepath);
-  return stats.size;
+  return stats.size / (1024 * 1024);
 };
 
 // For small files
