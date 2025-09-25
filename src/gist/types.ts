@@ -1,16 +1,9 @@
-export type GistConfig = {
-  description: string;
-  public: boolean;
-  filenamePrefix: string;
-};
-export type GistFile = {
-  content: string;
-};
+export type GistFiles = Record<string, { content: string }>;
 
 export type GistCreateRequest = {
   description: string;
   public: boolean;
-  files: Record<string, GistFile>;
+  files: GistFiles;
 };
 
 export type GistResponse = {

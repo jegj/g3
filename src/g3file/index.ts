@@ -10,7 +10,7 @@ export type G3File = {
   filepath: string;
 };
 
-export const createG3File =
+export const createG3FileFactory =
   ({ config }: G3Dependecies) =>
   (fpath: string): G3File => {
     const filename = path.basename(fpath);
