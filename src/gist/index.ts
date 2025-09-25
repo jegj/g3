@@ -41,4 +41,5 @@ const getHeaders = (config: G3Config) => ({
   Authorization: `Bearer ${config.GITHUB_TOKEN}`,
   "X-GitHub-Api-Version": DEFAULT_GITHUB_VERSION,
   "Content-Type": "application/json",
+  "User-Agent": "g3-cli",
 });
