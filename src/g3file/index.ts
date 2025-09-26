@@ -19,8 +19,8 @@ export const createG3FileFactory =
     const filepath = resolvePath(fpath);
 
     return {
-      g3Filename: g3Filename,
-      g3Filepath: g3Filepath,
+      g3Filename,
+      g3Filepath,
       filename: filename,
       filepath,
     };
