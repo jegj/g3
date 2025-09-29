@@ -1,6 +1,9 @@
 import fs from "fs/promises";
 import { G3File } from "../g3file";
 import { GistDataEntry, FilesystemDataEntry } from "./types";
+import { G3Dependecies } from "../types";
+
+const G3_FILE_EXTENSION_INDEX_REMOVAL = -8;
 
 export const getFileSizeMb = async (g3File: G3File): Promise<number> => {
   const stats = await fs.stat(g3File.filepath);
@@ -28,3 +31,19 @@ export const appendG3Entry = async (
   await fs.writeFile(g3file.g3Filepath, jsonData);
   return;
 };
+
+export const createG3EntriesFactory =
+  ({ config }: G3Dependecies) =>
+  async (): Promise<string[]> => {
+    const files = await fs.readdir(config.DATA_FOLDER, {
+      withFileTypes: true,
+    });
+
+    if (files.length === 0) {
+      return [];
+    }
+
+    return files
+      .filter((file) => file.isFile() && file.name.endsWith(".g3.json"))
+      .map((file) => file.name.slice(0, G3_FILE_EXTENSION_INDEX_REMOVAL));
+  };
