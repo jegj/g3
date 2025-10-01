@@ -36,6 +36,24 @@ export const createGistFactory =
     return body.json() as Promise<GistResponse>;
   };
 
+export const deleteGistFactory =
+  ({ config }: G3Dependecies) =>
+  async (id: string): Promise<void> => {
+    const { statusCode, body } = await request(`${API_URL}/${id}`, {
+      method: "DELETE",
+      headers: getHeaders(config),
+    });
+
+    if (statusCode !== 204) {
+      const errorText = await body.text();
+      throw new Error(
+        `Gist deletion failed with status code ${statusCode}: ${errorText}`,
+      );
+    }
+
+    return;
+  };
+
 const getHeaders = (config: G3Config) => ({
   Accept: DEFAULT_ACCEPT_HEADER,
   Authorization: `Bearer ${config.GITHUB_TOKEN}`,
