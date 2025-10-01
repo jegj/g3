@@ -47,3 +47,7 @@ export const createG3EntriesFactory =
       .filter((file) => file.isFile() && file.name.endsWith(".g3.json"))
       .map((file) => file.name.slice(0, G3_FILE_EXTENSION_INDEX_REMOVAL));
   };
+
+export const deleteG3Entry = async (g3File: G3File): Promise<void> => {
+  await fs.unlink(g3File.g3Filepath);
+};
