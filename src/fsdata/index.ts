@@ -19,6 +19,14 @@ export const hasEntry = async (g3FIle: G3File): Promise<boolean> => {
   return true;
 };
 
+export const getG3Entry = async (
+  g3file: G3File,
+): Promise<FilesystemDataEntry> => {
+  const data = await fs.readFile(g3file.g3Filepath, "utf8");
+  const dataEntry: FilesystemDataEntry = JSON.parse(data);
+  return dataEntry;
+};
+
 export const appendG3Entry = async (
   entries: GistDataEntry[],
   g3file: G3File,
