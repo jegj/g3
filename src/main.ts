@@ -8,6 +8,7 @@ import {
 } from "./config";
 import ls from "./cmd/ls";
 import cp from "./cmd/cp";
+import rm from "./cmd/rm";
 
 const argv = hideBin(process.argv);
 
@@ -119,8 +120,8 @@ yargs(argv)
           "The file will be removed from your configured storage location",
         );
     },
-    handler: (argv) => {
-      console.log(`rm command: removing ${argv.file}`);
+    handler: async (argv) => {
+      await rm(argv);
     },
   })
   .epilog("For more information, visit https://github.com/jegj/g3")
