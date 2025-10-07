@@ -17,7 +17,7 @@ export default async function cp(argv: ArgumentsCamelCase) {
   const createGist = createGistFactory(dependencies);
   const description = argv.description as string;
   const file = argv.file as string;
-  const g3File = createG3File(file);
+  const g3File = await createG3File(file);
 
   const fileSizeMb = await getFileSizeMb(g3File);
   if (fileSizeMb < GIST_FILE_SIZE_MB) {

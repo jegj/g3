@@ -12,7 +12,7 @@ export default async function rm(argv: ArgumentsCamelCase) {
   const deleteGist = deleteGistFactory(dependencies);
   const createG3File = createG3FileFactory(dependencies);
   const file = argv.file as string;
-  const g3File = createG3File(file);
+  const g3File = await createG3File(file);
 
   const entry: FilesystemDataEntry = await getG3Entry(g3File);
   //TODO: Use the same entity for the operation. Allow g3Fiel contain metadata about the file
