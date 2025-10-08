@@ -10,7 +10,7 @@ export type G3File = {
   g3Filepath: string;
   filename: string;
   filepath: string;
-  filesystemDataEntry?: FilesystemDataEntry | null;
+  filesystemDataEntry: FilesystemDataEntry;
 };
 
 export const createG3FileFactory =
@@ -21,23 +21,28 @@ export const createG3FileFactory =
     const g3Filepath = path.join(config.DATA_FOLDER, g3Filename);
     const filepath = resolvePath(fpath);
 
+    const emptyFilesystemEntry: FilesystemDataEntry = {
+      entries: [],
+      createdAt: new Date().toISOString(),
+    };
+
     const g3file: G3File = {
       g3Filename,
       g3Filepath,
       filename: filename,
       filepath,
+      filesystemDataEntry: emptyFilesystemEntry,
     };
 
     try {
       const filesystemDataEntry = await getG3Entry(g3file);
       g3file.filesystemDataEntry = filesystemDataEntry;
     } catch (e) {
+      // Throw only when the error is different than file not found
       if (
-        e instanceof Error &&
-        (e.message.includes("ENOENT") || e.message.includes("not found"))
+        !(e instanceof Error) ||
+        (!e.message.includes("ENOENT") && !e.message.includes("not found"))
       ) {
-        g3file.filesystemDataEntry = null;
-      } else {
         throw e;
       }
     }
