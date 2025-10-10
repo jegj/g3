@@ -11,6 +11,7 @@ export type G3File = {
   filename: string;
   filepath: string;
   filesystemDataEntry: FilesystemDataEntry;
+  exists: boolean;
 };
 
 export const createG3FileFactory =
@@ -32,11 +33,13 @@ export const createG3FileFactory =
       filename: filename,
       filepath,
       filesystemDataEntry: emptyFilesystemEntry,
+      exists: false,
     };
 
     try {
       const filesystemDataEntry = await getG3Entry(g3file);
       g3file.filesystemDataEntry = filesystemDataEntry;
+      g3file.exists = true;
     } catch (e) {
       // Throw only when the error is different than file not found
       if (
