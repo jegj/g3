@@ -54,6 +54,36 @@ export const deleteGistFactory =
     return;
   };
 
+export const updateGistFactory =
+  ({ config }: G3Dependecies) =>
+  async (
+    id: string,
+    description: string,
+    files: GistFiles,
+    isPublic: boolean,
+  ): Promise<GistResponse> => {
+    const requestData: GistCreateRequest = {
+      description,
+      public: isPublic,
+      files,
+    };
+
+    const { statusCode, body } = await request(`${API_URL}/${id}`, {
+      method: "PATCH",
+      headers: getHeaders(config),
+      body: JSON.stringify(requestData),
+    });
+
+    if (statusCode !== 200) {
+      const errorText = await body.text();
+      throw new Error(
+        `Gist update failed with status code ${statusCode}: ${errorText}`,
+      );
+    }
+
+    return body.json() as Promise<GistResponse>;
+  };
+
 const getHeaders = (config: G3Config) => ({
   Accept: DEFAULT_ACCEPT_HEADER,
   Authorization: `Bearer ${config.GITHUB_TOKEN}`,
