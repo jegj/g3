@@ -1,12 +1,12 @@
 import { ArgumentsCamelCase } from "yargs";
 import { createConfigFromArgv } from "../config";
-import { G3Dependecies } from "../types";
-import { createG3FileFactory } from "../g3file";
-import { appendG3Entry, getFileContent, getFileSizeMb } from "../fsdata";
 import { encryptAESGCM } from "../crypto";
-import { GistFiles, GistResponse } from "../gist/types";
-import { createGistFactory } from "../gist";
+import { appendG3Entry, getFileContent, getFileSizeMb } from "../fsdata";
 import { GistDataEntry } from "../fsdata/types";
+import { createG3FileFactory } from "../g3file";
+import { createGistFactory } from "../gist";
+import { GistFiles, GistResponse } from "../gist/types";
+import { G3Dependecies } from "../types";
 
 const GIST_FILE_SIZE_MB = 10;
 

@@ -1,8 +1,8 @@
-import { describe, it } from "node:test";
 import assert from "node:assert";
+import { describe, it } from "node:test";
 import { G3Config } from "../../src/config";
-import { G3Dependecies } from "../../src/types";
 import { createG3File } from "../../src/g3file";
+import { G3Dependecies } from "../../src/types";
 
 describe("G3File", () => {
   const g3ConfigMock: G3Config = {

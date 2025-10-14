@@ -1,5 +1,5 @@
-import path from "path";
 import os from "os";
+import path from "path";
 
 export function resolvePath(filePath: string): string {
   if (filePath.startsWith("~")) {

@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import { G3File } from "../g3file";
-import { GistDataEntry, FilesystemDataEntry } from "./types";
 import { G3Dependecies } from "../types";
+import { FilesystemDataEntry, GistDataEntry } from "./types";
 
 const G3_FILE_EXTENSION_INDEX_REMOVAL = -8;
 

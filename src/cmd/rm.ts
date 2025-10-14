@@ -1,10 +1,10 @@
 import { ArgumentsCamelCase } from "yargs";
 import { createConfigFromArgv } from "../config";
 import { deleteG3Entry } from "../fsdata";
+import { GistDataEntry } from "../fsdata/types";
+import { createG3FileFactory, G3File } from "../g3file";
 import { deleteGistFactory } from "../gist";
 import { G3Dependecies } from "../types";
-import { createG3FileFactory, G3File } from "../g3file";
-import { GistDataEntry } from "../fsdata/types";
 
 export default async function rm(argv: ArgumentsCamelCase) {
   const config = createConfigFromArgv(argv);

@@ -1,8 +1,8 @@
 import path from "path";
-import { G3Dependecies } from "../types";
-import { resolvePath } from "../utils";
 import { getG3Entry } from "../fsdata";
 import { FilesystemDataEntry } from "../fsdata/types";
+import { G3Dependecies } from "../types";
+import { resolvePath } from "../utils";
 
 // A G3File represents a file in the G3 system.
 export type G3File = {

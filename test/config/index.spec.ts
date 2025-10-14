@@ -1,10 +1,9 @@
-import { afterEach, beforeEach, describe, it } from "node:test";
-
 import assert from "node:assert";
-import { createG3Config, parseG3Config } from "../../src/config";
-import { z } from "zod";
-import path from "node:path";
 import fs from "node:fs";
+import path from "node:path";
+import { afterEach, beforeEach, describe, it } from "node:test";
+import { z } from "zod";
+import { createG3Config, parseG3Config } from "../../src/config";
 
 describe("Config", () => {
   describe("createG3Config", () => {

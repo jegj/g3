@@ -1,7 +1,7 @@
 import { request } from "undici";
-import { GistCreateRequest, GistFiles, GistResponse } from "./types";
 import { G3Config } from "../config";
 import { G3Dependecies } from "../types";
+import { GistCreateRequest, GistFiles, GistResponse } from "./types";
 
 const API_URL = "https://api.github.com/gists";
 const DEFAULT_GITHUB_VERSION = "2022-11-28";

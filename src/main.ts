@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
+import cp from "./cmd/cp";
+import ls from "./cmd/ls";
+import rm from "./cmd/rm";
 import {
   createDataFile,
   DEFAULT_CONFIG_FILEPATH,
   parseG3Config,
 } from "./config";
-import ls from "./cmd/ls";
-import cp from "./cmd/cp";
-import rm from "./cmd/rm";
 
 const argv = hideBin(process.argv);
 
