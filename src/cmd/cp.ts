@@ -34,20 +34,22 @@ export default async function cp(argv: ArgumentsCamelCase) {
         content,
         Buffer.from(config.AES_KEY),
       );
-      const gistHttpPayload: GistFiles = {
+      const gistFiles: GistFiles = {
         [g3File.filename]: {
           content: String(encryptedContent),
         },
       };
       const resp: GistResponse = await createGist(
         description,
-        gistHttpPayload,
+        gistFiles,
         false,
       );
       const entries: GistDataEntry[] = [
         {
           id: resp.id,
           gistUrl: resp.url,
+          //FIXME:: COntent is being copied into the filesystem
+          files: gistFiles,
         },
       ];
       await appendG3Entry(entries, g3File);
