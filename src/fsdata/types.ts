@@ -1,4 +1,4 @@
-import { GistFiles } from "../gist/types";
+import { GistFilesResponse } from "../gist/types";
 
 export type FilesystemDataEntry = {
   entries: GistDataEntry[];
@@ -8,5 +8,5 @@ export type FilesystemDataEntry = {
 export type GistDataEntry = {
   id: string;
   gistUrl: string;
-  files: GistFiles;
+  files: Record<string, GistFilesResponse>;
 };

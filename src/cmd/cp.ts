@@ -5,7 +5,7 @@ import { appendG3Entry, getFileContent, getFileSizeMb } from "../fsdata";
 import { GistDataEntry } from "../fsdata/types";
 import { createG3FileFactory } from "../g3file";
 import { createGistFactory } from "../gist";
-import { GistFiles, GistResponse } from "../gist/types";
+import { GistFilesRequest, GistResponse } from "../gist/types";
 import { G3Dependecies } from "../types";
 
 const GIST_FILE_SIZE_MB = 10;
@@ -34,22 +34,18 @@ export default async function cp(argv: ArgumentsCamelCase) {
         content,
         Buffer.from(config.AES_KEY),
       );
-      const gistFiles: GistFiles = {
+      const gistFiles: GistFilesRequest = {
         [g3File.filename]: {
           content: String(encryptedContent),
         },
       };
-      const resp: GistResponse = await createGist(
-        description,
-        gistFiles,
-        false,
-      );
+      let resp: GistResponse = await createGist(description, gistFiles, false);
+      resp = deleteContentFromGistReponse(resp);
       const entries: GistDataEntry[] = [
         {
           id: resp.id,
           gistUrl: resp.url,
-          //FIXME:: COntent is being copied into the filesystem
-          files: gistFiles,
+          files: resp.files,
         },
       ];
       await appendG3Entry(entries, g3File);
@@ -57,4 +53,13 @@ export default async function cp(argv: ArgumentsCamelCase) {
       // TODO: FOR BIGGER FILES THAT DOEST NOT EXISTS
     }
   }
+}
+
+function deleteContentFromGistReponse(resp: GistResponse) {
+  Object.values(resp.files).forEach((file) => {
+    if (file && file.content) {
+      file.content = "";
+    }
+  });
+  return resp;
 }

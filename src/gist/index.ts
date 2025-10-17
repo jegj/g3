@@ -1,7 +1,7 @@
 import { request } from "undici";
 import { G3Config } from "../config";
 import { G3Dependecies } from "../types";
-import { GistCreateRequest, GistFiles, GistResponse } from "./types";
+import { GistCreateRequest, GistFilesRequest, GistResponse } from "./types";
 
 const API_URL = "https://api.github.com/gists";
 const DEFAULT_GITHUB_VERSION = "2022-11-28";
@@ -11,7 +11,7 @@ export const createGistFactory =
   ({ config }: G3Dependecies) =>
   async (
     description: string,
-    files: GistFiles,
+    files: GistFilesRequest,
     isPublic: boolean,
   ): Promise<GistResponse> => {
     const requestData: GistCreateRequest = {
@@ -59,7 +59,7 @@ export const updateGistFactory =
   async (
     id: string,
     description: string,
-    files: GistFiles,
+    files: GistFilesRequest,
     isPublic: boolean,
   ): Promise<GistResponse> => {
     const requestData: GistCreateRequest = {
