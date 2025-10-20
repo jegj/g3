@@ -1,7 +1,9 @@
 #!/usr/bin/env node
+import kleur from "kleur";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import cp from "./cmd/cp";
+import get from "./cmd/get";
 import ls from "./cmd/ls";
 import rm from "./cmd/rm";
 import {
@@ -40,12 +42,16 @@ yargs(argv)
         console.log("Config loaded successfully");
       }
     } catch (error) {
-      if (argv.verbose) {
-        console.error("Error loading config:", error);
-      }
       console.error(
-        `Failed to load config file at ${configPath}. Check if your configuration file exists and is valid JSON.`,
+        kleur.red(
+          `Failed to load config file at ${configPath}. Check if your configuration file exists and it is a valid JSON.`,
+        ),
       );
+      if (argv.verbose) {
+        console.error(
+          kleur.dim(error instanceof Error ? error.stack || "" : String(error)),
+        );
+      }
       process.exit(1);
     }
   })
@@ -101,8 +107,8 @@ yargs(argv)
           "The file will be retrieved from your configured storage location",
         );
     },
-    handler: (argv) => {
-      console.log(`get command: retrieving ${argv.file}`);
+    handler: async (argv) => {
+      await get(argv);
     },
   })
   .command({
@@ -123,6 +129,15 @@ yargs(argv)
     handler: async (argv) => {
       await rm(argv);
     },
+  })
+  .fail((msg, err, yargs) => {
+    if ("isOperational" in err && err.isOperational) {
+      console.error(kleur.red(`Error: ${err.message}`));
+    } else {
+      console.error(kleur.red("Fatal Error:"), err.message);
+      console.error(kleur.dim(err.stack || ""));
+    }
+    process.exit(1);
   })
   .epilog("For more information, visit https://github.com/jegj/g3")
   .alias("h", "help")
