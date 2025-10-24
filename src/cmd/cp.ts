@@ -1,7 +1,7 @@
 import { ArgumentsCamelCase } from "yargs";
 import { createConfigFromArgv } from "../config";
 import { encryptAESGCM } from "../crypto";
-import { appendG3Entry, getFileContent, getFileSizeMb } from "../fsdata";
+import { appendG3FSEntry, getFileContent, getFileSizeMb } from "../fsdata";
 import { GistDataEntry } from "../fsdata/types";
 import { createG3FileFactory } from "../g3file";
 import { createGistFactory } from "../gist";
@@ -48,7 +48,7 @@ export default async function cp(argv: ArgumentsCamelCase) {
           files: resp.files,
         },
       ];
-      await appendG3Entry(entries, g3File);
+      await appendG3FSEntry(entries, g3File);
     } else {
       // TODO: FOR BIGGER FILES THAT DOEST NOT EXISTS
     }
