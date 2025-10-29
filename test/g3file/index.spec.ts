@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
 import { G3Config } from "../../src/config";
-import { createG3File } from "../../src/g3file";
+import { createG3FileFactory } from "../../src/g3file";
 import { G3Dependecies } from "../../src/types";
 
 describe("G3File", () => {
@@ -11,12 +11,12 @@ describe("G3File", () => {
     DATA_FOLDER: "/home/fakeuser/.local/share/g3/files/",
   };
   const dependencies: G3Dependecies = { config: g3ConfigMock };
-  const g3FileFactory = createG3File(dependencies);
+  const g3FileFactory = createG3FileFactory(dependencies);
 
-  describe("createG3File", () => {
-    it("should create a G3File with absolute path", () => {
+  describe("createG3FileFactory", () => {
+    it("should create a G3File with absolute path", async () => {
       const absolutePath = "/home/user/documents/report.pdf";
-      const result = g3FileFactory(absolutePath);
+      const result = await g3FileFactory(absolutePath);
 
       assert.strictEqual(result.filename, "report.pdf");
       assert.strictEqual(result.filepath, absolutePath);

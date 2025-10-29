@@ -1,43 +1,37 @@
 import path from "path";
-import { getG3Entry } from "../fsdata";
+import { getG3FSEntry } from "../fsdata";
 import { FilesystemDataEntry } from "../fsdata/types";
 import { G3Dependecies } from "../types";
 import { resolvePath } from "../utils";
 
 // A G3File represents a file in the G3 system.
-export type G3File = {
+export class G3File {
   g3Filename: string;
   g3Filepath: string;
   filename: string;
   filepath: string;
   filesystemDataEntry: FilesystemDataEntry;
   exists: boolean;
-};
+
+  constructor(fpath: string, dataFolder: string) {
+    this.filename = path.basename(fpath);
+    this.g3Filename = `${this.filename}.g3.json`;
+    this.g3Filepath = path.join(dataFolder, this.g3Filename);
+    this.filepath = resolvePath(fpath);
+    this.exists = false;
+    this.filesystemDataEntry = {
+      entries: [],
+      createdAt: new Date().toISOString(),
+    };
+  }
+}
 
 export const createG3FileFactory =
   ({ config }: G3Dependecies) =>
   async (fpath: string): Promise<G3File> => {
-    const filename = path.basename(fpath);
-    const g3Filename = `${filename}.g3.json`;
-    const g3Filepath = path.join(config.DATA_FOLDER, g3Filename);
-    const filepath = resolvePath(fpath);
-
-    const emptyFilesystemEntry: FilesystemDataEntry = {
-      entries: [],
-      createdAt: new Date().toISOString(),
-    };
-
-    const g3file: G3File = {
-      g3Filename,
-      g3Filepath,
-      filename: filename,
-      filepath,
-      filesystemDataEntry: emptyFilesystemEntry,
-      exists: false,
-    };
-
+    const g3file: G3File = new G3File(fpath, config.DATA_FOLDER);
     try {
-      const filesystemDataEntry = await getG3Entry(g3file);
+      const filesystemDataEntry = await getG3FSEntry(g3file);
       g3file.filesystemDataEntry = filesystemDataEntry;
       g3file.exists = true;
     } catch (e) {
