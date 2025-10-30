@@ -24,14 +24,28 @@ export class G3File {
       createdAt: new Date().toISOString(),
     };
   }
+
+  hasMultipleFiles(): boolean {
+    if (this.filesystemDataEntry.entries.length > 1) {
+      return true;
+    } else if (this.filesystemDataEntry.entries.length === 1) {
+      const entry = this.filesystemDataEntry.entries[0];
+      return Object.keys(entry.files).length > 1;
+    } else {
+      return false;
+    }
+  }
 }
 
 export const createG3FileFactory =
-  ({ config }: G3Dependecies) =>
+  (
+    { config }: G3Dependecies,
+    getG3Entry: (g3file: G3File) => Promise<FilesystemDataEntry> = getG3FSEntry,
+  ) =>
   async (fpath: string): Promise<G3File> => {
     const g3file: G3File = new G3File(fpath, config.DATA_FOLDER);
     try {
-      const filesystemDataEntry = await getG3FSEntry(g3file);
+      const filesystemDataEntry = await getG3Entry(g3file);
       g3file.filesystemDataEntry = filesystemDataEntry;
       g3file.exists = true;
     } catch (e) {
