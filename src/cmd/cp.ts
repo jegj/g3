@@ -19,9 +19,7 @@ export default async function cp(argv: ArgumentsCamelCase) {
   const file = argv.file as string;
   const g3File = await createG3File(file);
   const fileSizeMb = await getFileSizeMb(g3File);
-
   //https://medium.com/@serhiisamoilenko/speeding-up-file-parsing-with-multi-threading-in-nodejs-and-typescript-9e91728cf607
-
   if (g3File.exists) {
     if (fileSizeMb < GIST_FILE_SIZE_MB) {
     } else {
@@ -45,6 +43,7 @@ export default async function cp(argv: ArgumentsCamelCase) {
         {
           id: resp.id,
           gistUrl: resp.url,
+          gistPullUrl: resp.git_pull_url,
           files: resp.files,
         },
       ];

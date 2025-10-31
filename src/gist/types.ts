@@ -10,6 +10,7 @@ export type GistResponse = {
   id: string;
   url: string;
   description: string;
+  git_pull_url: string;
   public: boolean;
   files: Record<string, GistFilesResponse>;
   truncated: boolean;

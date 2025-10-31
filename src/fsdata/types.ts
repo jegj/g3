@@ -8,5 +8,6 @@ export type FilesystemDataEntry = {
 export type GistDataEntry = {
   id: string;
   gistUrl: string;
+  gistPullUrl: string;
   files: Record<string, GistFilesResponse>;
 };
