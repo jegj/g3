@@ -26,14 +26,7 @@ export class G3File {
   }
 
   hasMultipleFiles(): boolean {
-    if (this.filesystemDataEntry.entries.length > 1) {
-      return true;
-    } else if (this.filesystemDataEntry.entries.length === 1) {
-      const entry = this.filesystemDataEntry.entries[0];
-      return Object.keys(entry.files).length > 1;
-    } else {
-      return false;
-    }
+    return this.filesystemDataEntry.entries.length > 1;
   }
 }
 

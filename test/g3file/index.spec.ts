@@ -44,7 +44,7 @@ describe("G3File", () => {
       assert.strictEqual(g3file.hasMultipleFiles(), true);
     });
 
-    it("returns true with single entry having multiple files", async () => {
+    it("returns false with single entry having multiple files", async () => {
       const getG3FSEntryMock = async () => {
         return {
           entries: [generateMockGistDataEntry(3)],
@@ -53,7 +53,7 @@ describe("G3File", () => {
       const g3FileFactory = createG3FileFactory(dependencies, getG3FSEntryMock);
       const g3file = await g3FileFactory("/path1/file1.txt");
 
-      assert.strictEqual(g3file.hasMultipleFiles(), true);
+      assert.strictEqual(g3file.hasMultipleFiles(), false);
     });
 
     it("returns false with single entry having one file", async () => {
