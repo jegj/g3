@@ -20,7 +20,8 @@ export default async function get(argv: ArgumentsCamelCase) {
   if (g3File.exists) {
     if (g3File.hasMultipleFiles()) {
     } else {
-      //TODO: CHECK IF USER WORKER OR PROCESS
+      //TODO: CHECK IF USE WORKER OR PROCESS
+      //TODO: GIT CLONE <PULL_URL> <FOLDER> This clone all the entries inside the gist, sort later
     }
   } else {
     throw g3Error(`File ${file} does not exist in g3data.`);
