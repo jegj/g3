@@ -75,4 +75,20 @@ describe("G3File", () => {
       assert.strictEqual(g3file.hasMultipleFiles(), false);
     });
   });
+
+  describe("getFileIndex", () => {
+    it("return 0 for the first call and following call increment by 1", async () => {
+      const getG3FSEntryMock = async () => {
+        return {
+          entries: [generateMockGistDataEntry(1)],
+        } as FilesystemDataEntry;
+      };
+      const g3FileFactory = createG3FileFactory(dependencies, getG3FSEntryMock);
+
+      const g3file = await g3FileFactory("/path1/file1.txt");
+      assert.strictEqual(g3file.getFileIndex(), 0);
+      assert.strictEqual(g3file.getFileIndex(), 1);
+      assert.strictEqual(g3file.getFileIndex(), 2);
+    });
+  });
 });

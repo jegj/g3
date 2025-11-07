@@ -12,6 +12,7 @@ export class G3File {
   filepath: string;
   filesystemDataEntry: FilesystemDataEntry;
   exists: boolean;
+  private findex: number;
 
   constructor(fpath: string, dataFolder: string) {
     this.filename = path.basename(fpath);
@@ -19,6 +20,7 @@ export class G3File {
     this.g3Filepath = path.join(dataFolder, this.g3Filename);
     this.filepath = resolvePath(fpath);
     this.exists = false;
+    this.findex = 0;
     this.filesystemDataEntry = {
       entries: [],
       createdAt: new Date().toISOString(),
@@ -27,6 +29,10 @@ export class G3File {
 
   hasMultipleFiles(): boolean {
     return this.filesystemDataEntry.entries.length > 1;
+  }
+
+  getFileIndex(): number {
+    return this.findex++;
   }
 }
 
