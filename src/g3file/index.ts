@@ -4,6 +4,8 @@ import { FilesystemDataEntry } from "../fsdata/types";
 import { G3Dependecies } from "../types";
 import { resolvePath } from "../utils";
 
+const ZERO_PAD = 3;
+
 // A G3File represents a file in the G3 system.
 export class G3File {
   g3Filename: string;
@@ -31,8 +33,8 @@ export class G3File {
     return this.filesystemDataEntry.entries.length > 1;
   }
 
-  getFileIndex(): number {
-    return this.findex++;
+  get sortableFileName(): string {
+    return `${(this.findex++).toString().padStart(ZERO_PAD, "0")}-${this.filename}`;
   }
 }
 

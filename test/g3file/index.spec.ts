@@ -77,7 +77,7 @@ describe("G3File", () => {
   });
 
   describe("getFileIndex", () => {
-    it("return 0 for the first call and following call increment by 1", async () => {
+    it("should increment file index on each call", async () => {
       const getG3FSEntryMock = async () => {
         return {
           entries: [generateMockGistDataEntry(1)],
@@ -85,10 +85,15 @@ describe("G3File", () => {
       };
       const g3FileFactory = createG3FileFactory(dependencies, getG3FSEntryMock);
 
-      const g3file = await g3FileFactory("/path1/file1.txt");
-      assert.strictEqual(g3file.getFileIndex(), 0);
-      assert.strictEqual(g3file.getFileIndex(), 1);
-      assert.strictEqual(g3file.getFileIndex(), 2);
+      const g3file = await g3FileFactory("/path1/test.txt");
+
+      const firstFileName = g3file.sortableFileName;
+      const secondFileName = g3file.sortableFileName;
+      const thirdFileName = g3file.sortableFileName;
+
+      assert.strictEqual(firstFileName, "000-test.txt");
+      assert.strictEqual(secondFileName, "001-test.txt");
+      assert.strictEqual(thirdFileName, "002-test.txt");
     });
   });
 });
