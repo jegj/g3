@@ -33,7 +33,7 @@ export default async function cp(argv: ArgumentsCamelCase) {
         Buffer.from(config.AES_KEY),
       );
       const gistFiles: GistFilesRequest = {
-        [g3File.filename]: {
+        [g3File.sortableFileName]: {
           content: String(encryptedContent),
         },
       };
