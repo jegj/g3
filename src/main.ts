@@ -93,7 +93,7 @@ yargs(argv)
     },
   })
   .command({
-    command: "get <file>",
+    command: "get <file> [destination]",
     describe: "Get file from your storage",
     builder: (yargs) => {
       return yargs
@@ -101,8 +101,20 @@ yargs(argv)
           describe: "File to retrieve",
           type: "string",
         })
-        .usage("$0 get <file>")
-        .example("$0 get myfile.txt", "Retrieve myfile.txt from storage")
+        .positional("destination", {
+          describe: "Destination path (defaults to current directory)",
+          type: "string",
+          default: ".",
+        })
+        .usage("$0 get <file> [destination]")
+        .example(
+          "$0 get myfile.txt",
+          "Retrieve myfile.txt to current directory",
+        )
+        .example(
+          "$0 get myfile.txt ./downloads",
+          "Retrieve myfile.txt to downloads folder",
+        )
         .epilog(
           "The file will be retrieved from your configured storage location",
         );
