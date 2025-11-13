@@ -29,7 +29,7 @@ export class G3File {
     };
   }
 
-  hasMultipleFiles(): boolean {
+  hasMultipleGistEntries(): boolean {
     return this.filesystemDataEntry.entries.length > 1;
   }
 
