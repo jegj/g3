@@ -1,4 +1,5 @@
 import * as crypto from "crypto";
+import { g3Error } from "../error";
 
 const algorithm = "aes-256-cbc";
 const iterations = 100000;
@@ -30,13 +31,23 @@ export function encryptAESGCM(plaintext: Buffer, password: Buffer): Buffer {
 }
 
 export function decryptAESGCM(ciphertext: Buffer, password: Buffer): Buffer {
-  const salt = ciphertext.slice(0, 16);
-  const encryptedData = ciphertext.slice(16);
+  const salt = ciphertext.subarray(0, 16);
+  const encryptedData = ciphertext.subarray(16);
   const { key, iv } = deriveKeyAndIV(password, salt);
   const decipher = crypto.createDecipheriv(algorithm, key, iv);
-  const decryptedData = Buffer.concat([
-    decipher.update(encryptedData),
-    decipher.final(),
-  ]);
-  return decryptedData;
+
+  try {
+    const decryptedData = Buffer.concat([
+      decipher.update(encryptedData),
+      decipher.final(),
+    ]);
+    return decryptedData;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    throw g3Error(
+      "Decryption failed. Invalid password or corrupted data.",
+      errorMessage,
+    );
+  }
 }
