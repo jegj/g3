@@ -1,12 +1,13 @@
 import { spawn } from "child_process";
+import { rm } from "fs/promises";
 import { ArgumentsCamelCase } from "yargs";
 import { createConfigFromArgv } from "../config";
 import { g3Error } from "../error";
 import { createG3FileFactory } from "../g3file";
+import { decryptFilesInFolder } from "../pool";
 import { G3Dependecies } from "../types";
 import { createTempFolder, resolvePath } from "../utils";
 
-// The idea to use the gist_pull_url and do the merging locally
 export default async function get(argv: ArgumentsCamelCase) {
   const config = createConfigFromArgv(argv);
   const dependencies: G3Dependecies = { config };
@@ -22,10 +23,12 @@ export default async function get(argv: ArgumentsCamelCase) {
   if (g3File.exists) {
     if (g3File.hasMultipleGistEntries()) {
     } else {
+      await deleteFolderIfExists(temporalFolder);
       await gitClone(
         g3File.filesystemDataEntry.entries[0].gistPullUrl,
         temporalFolder,
       );
+      await decryptFilesInFolder(temporalFolder, config.AES_KEY);
       // TODO: Implement merging logic
     }
   } else {
@@ -60,4 +63,8 @@ async function gitClone(url: string, folder: string): Promise<void> {
       reject(new Error(`Failed to start git process: ${error.message}`));
     });
   });
+}
+
+async function deleteFolderIfExists(folder: string): Promise<void> {
+  await rm(folder, { recursive: true, force: true });
 }

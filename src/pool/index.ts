@@ -14,6 +14,10 @@ const piscina = new Piscina({
   workerData: { fullpath: filename },
 });
 
+piscina.on("message", (event) => {
+  console.log("Message received from worker: ", event);
+});
+
 export async function decryptFilesInFolder(
   folder: string,
   descryptPassword: string,
