@@ -10,8 +10,8 @@ export const getFileSizeMb = async (g3File: G3File): Promise<number> => {
   return stats.size / (1024 * 1024);
 };
 
-export const getFileContent = async (g3File: G3File): Promise<Buffer> => {
-  return fs.readFile(g3File.filepath);
+export const getFileContent = async (g3File: G3File): Promise<string> => {
+  return fs.readFile(g3File.filepath, { encoding: "utf-8" });
 };
 
 export const hasEntry = async (g3FIle: G3File): Promise<boolean> => {

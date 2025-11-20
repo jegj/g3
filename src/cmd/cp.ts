@@ -28,10 +28,7 @@ export default async function cp(argv: ArgumentsCamelCase) {
   } else {
     if (fileSizeMb < GIST_FILE_SIZE_MB) {
       const content = await getFileContent(g3File);
-      const encryptedContent = encryptAESGCM(
-        content,
-        Buffer.from(config.AES_KEY),
-      );
+      const encryptedContent = encryptAESGCM(content, config.AES_KEY);
       const gistFiles: GistFilesRequest = {
         [g3File.sortableFileName]: {
           content: String(encryptedContent),

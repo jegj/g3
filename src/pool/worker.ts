@@ -12,7 +12,7 @@ interface DecryptFileInput {
 
 export function decryptFile({ file, password }: DecryptFileInput) {
   parentPort?.postMessage(`Decrypting file ${file}`);
-  const content = fs.readFileSync(file);
-  const decryptedContent = decryptAESGCM(content, Buffer.from(password));
+  const content = fs.readFileSync(file, { encoding: "utf-8" });
+  const decryptedContent = decryptAESGCM(content, password);
   fs.writeFileSync(file, decryptedContent);
 }
