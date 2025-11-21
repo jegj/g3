@@ -1,12 +1,15 @@
 import { spawn } from "child_process";
-import { rm } from "fs/promises";
+import { createReadStream, createWriteStream } from "fs";
+import { readdir } from "fs/promises";
+import { join } from "path";
+import { pipeline } from "stream/promises";
 import { ArgumentsCamelCase } from "yargs";
 import { createConfigFromArgv } from "../config";
 import { g3Error } from "../error";
 import { createG3FileFactory } from "../g3file";
 import { decryptFilesInFolder } from "../pool";
 import { G3Dependecies } from "../types";
-import { createTempFolder, resolvePath } from "../utils";
+import { createTempFolder, deleteFolderIfExists, resolvePath } from "../utils";
 
 export default async function get(argv: ArgumentsCamelCase) {
   const config = createConfigFromArgv(argv);
@@ -19,6 +22,7 @@ export default async function get(argv: ArgumentsCamelCase) {
     fileDestination,
     g3File.filename,
   );
+  const finalFilePath = join(fileDestination, g3File.filename);
   console.log(`Getting file ${file} to ${temporalFolder}/`);
   if (g3File.exists) {
     if (g3File.hasMultipleGistEntries()) {
@@ -29,7 +33,7 @@ export default async function get(argv: ArgumentsCamelCase) {
         temporalFolder,
       );
       await decryptFilesInFolder(temporalFolder, config.AES_KEY);
-      // TODO: Implement merging logic
+      await mergeFilesStreaming(finalFilePath, temporalFolder);
     }
   } else {
     throw g3Error(`File ${file} does not exist in g3data.`);
@@ -65,6 +69,22 @@ async function gitClone(url: string, folder: string): Promise<void> {
   });
 }
 
-async function deleteFolderIfExists(folder: string): Promise<void> {
-  await rm(folder, { recursive: true, force: true });
+async function mergeFilesStreaming(
+  outputFile: string,
+  searchDir: string = ".",
+): Promise<void> {
+  const files = await readdir(searchDir);
+  const matchedFiles = files
+    .filter((file) => file !== ".git")
+    .sort()
+    .map((file) => join(searchDir, file));
+
+  const output = createWriteStream(outputFile);
+
+  for (const file of matchedFiles) {
+    const input = createReadStream(file);
+    await pipeline(input, output, { end: false });
+  }
+
+  output.end();
 }
