@@ -1,4 +1,4 @@
-import { mkdir } from "fs/promises";
+import { mkdir, rm } from "fs/promises";
 import os from "os";
 import path, { join } from "path";
 
@@ -19,4 +19,8 @@ export async function createTempFolder(
   const folderPath = join(location, hiddenFolderName);
   await mkdir(folderPath, { recursive: true });
   return folderPath;
+}
+
+export async function deleteFolderIfExists(folder: string): Promise<void> {
+  await rm(folder, { recursive: true, force: true });
 }
