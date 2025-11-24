@@ -1,6 +1,8 @@
-import { mkdir, rm } from "fs/promises";
+import { createReadStream, createWriteStream } from "fs";
+import { mkdir, readdir, rm } from "fs/promises";
 import os from "os";
 import path, { join } from "path";
+import { pipeline } from "stream/promises";
 
 export function resolvePath(filePath: string): string {
   if (filePath.startsWith("~")) {
@@ -23,4 +25,24 @@ export async function createTempFolder(
 
 export async function deleteFolderIfExists(folder: string): Promise<void> {
   await rm(folder, { recursive: true, force: true });
+}
+
+export async function mergeFilesStreaming(
+  outputFile: string,
+  searchDir: string = ".",
+): Promise<void> {
+  const files = await readdir(searchDir);
+  const matchedFiles = files
+    .filter((file) => file !== ".git")
+    .sort()
+    .map((file) => join(searchDir, file));
+
+  const output = createWriteStream(outputFile);
+
+  for (const file of matchedFiles) {
+    const input = createReadStream(file);
+    await pipeline(input, output, { end: false });
+  }
+
+  output.end();
 }

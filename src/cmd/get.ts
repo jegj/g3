@@ -9,7 +9,12 @@ import { g3Error } from "../error";
 import { createG3FileFactory } from "../g3file";
 import { decryptFilesInFolder } from "../pool";
 import { G3Dependecies } from "../types";
-import { createTempFolder, deleteFolderIfExists, resolvePath } from "../utils";
+import {
+  createTempFolder,
+  deleteFolderIfExists,
+  mergeFilesStreaming,
+  resolvePath,
+} from "../utils";
 
 export default async function get(argv: ArgumentsCamelCase) {
   const config = createConfigFromArgv(argv);
@@ -67,24 +72,4 @@ async function gitClone(url: string, folder: string): Promise<void> {
       reject(new Error(`Failed to start git process: ${error.message}`));
     });
   });
-}
-
-async function mergeFilesStreaming(
-  outputFile: string,
-  searchDir: string = ".",
-): Promise<void> {
-  const files = await readdir(searchDir);
-  const matchedFiles = files
-    .filter((file) => file !== ".git")
-    .sort()
-    .map((file) => join(searchDir, file));
-
-  const output = createWriteStream(outputFile);
-
-  for (const file of matchedFiles) {
-    const input = createReadStream(file);
-    await pipeline(input, output, { end: false });
-  }
-
-  output.end();
 }
