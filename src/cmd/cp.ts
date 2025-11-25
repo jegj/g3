@@ -41,7 +41,6 @@ export default async function cp(argv: ArgumentsCamelCase) {
           id: resp.id,
           gistUrl: resp.url,
           gistPullUrl: resp.git_pull_url,
-          //TODO: Add index to indentify sort order
           files: resp.files,
         },
       ];

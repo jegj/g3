@@ -31,6 +31,7 @@ export default async function get(argv: ArgumentsCamelCase) {
   console.log(`Getting file ${file} to ${temporalFolder}/`);
   if (g3File.exists) {
     if (g3File.hasMultipleGistEntries()) {
+      //TODO: DO LOGIC FOR MORE FILES
     } else {
       await deleteFolderIfExists(temporalFolder);
       await gitClone(
