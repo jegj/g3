@@ -34,3 +34,7 @@ export async function decryptFilesInFolder(
     }
   }
 }
+
+export async function uploadGist() {
+  //TODO: Call workers here
+}
