@@ -10,11 +10,11 @@ interface DecryptFileInput {
   password: string;
 }
 
-interface ProcessFileChunkParam {
+export interface ProcessFileChunkParam {
   filePath: string;
-  chunkSize: number;
-  offset: number;
-  chunkNumber: number;
+  start: number;
+  end: number;
+  chunkIndex: number;
 }
 
 export function decryptFile({ file, password }: DecryptFileInput) {
@@ -25,9 +25,15 @@ export function decryptFile({ file, password }: DecryptFileInput) {
 }
 
 export function processGistChunk(params: ProcessFileChunkParam) {
-  const fd = fs.openSync(params.filePath, "r");
-  const buffer = Buffer.alloc(params.chunkSize);
-  const bytesRead = fs.readSync(fd, buffer, 0, params.chunkSize, params.offset);
-  //TODO: DO SOMETHING
-  fs.closeSync(fd);
+  const { filePath, start, end, chunkIndex } = params;
+  const chunkSize = end - start;
+  try {
+    const fd = fs.openSync(filePath, "r");
+    const buffer = Buffer.alloc(chunkSize);
+    const bytesRead = fs.readSync(fd, buffer, 0, chunkSize, start);
+    //TODO: DO SOMETHING
+    fs.closeSync(fd);
+  } catch (error) {
+    throw new Error(`Failed to read chunk ${chunkIndex}: ${error}`);
+  }
 }

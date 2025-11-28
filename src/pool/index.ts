@@ -3,7 +3,8 @@ import * as os from "os";
 import * as path from "path";
 import { resolve } from "path";
 import Piscina from "piscina";
-import { filename } from "./worker";
+import { G3File } from "../g3file";
+import { filename, ProcessFileChunkParam } from "./worker";
 
 const piscina = new Piscina({
   filename: resolve(__dirname, "./workerWrapper.js"),
@@ -35,6 +36,33 @@ export async function decryptFilesInFolder(
   }
 }
 
-export async function uploadGist() {
-  //TODO: Call workers here
+export async function uploadGist(
+  g3File: G3File,
+  chunkSize: number = 1024 * 1024, // 1MB default
+) {
+  const stats = await fs.stat(g3File.filepath);
+  const fileSize = stats.size;
+  const numChunks = Math.ceil(fileSize / chunkSize);
+  console.log(`File size: ${fileSize} bytes`);
+  console.log(`Reading in ${numChunks} chunks ...`);
+  const tasks: Promise<void>[] = [];
+  for (let i = 0; i < numChunks; i++) {
+    const start = i * chunkSize;
+    const end = Math.min(start + chunkSize, fileSize);
+    const task: ProcessFileChunkParam = {
+      filePath: g3File.filepath,
+      start,
+      end,
+      chunkIndex: i,
+    };
+    tasks.push(
+      piscina.run(
+        {
+          ...task,
+        },
+        { name: "processGistChunk" },
+      ),
+    );
+    await Promise.all(tasks);
+  }
 }
