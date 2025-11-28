@@ -5,11 +5,6 @@ import { FilesystemDataEntry, GistDataEntry } from "./types";
 
 const G3_FILE_EXTENSION_INDEX_REMOVAL = -8;
 
-export const getFileSizeMb = async (g3File: G3File): Promise<number> => {
-  const stats = await fs.stat(g3File.filepath);
-  return stats.size / (1024 * 1024);
-};
-
 export const getFileContent = async (g3File: G3File): Promise<string> => {
   return fs.readFile(g3File.filepath, { encoding: "utf-8" });
 };
