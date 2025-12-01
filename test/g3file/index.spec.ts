@@ -19,7 +19,8 @@ describe("G3File", () => {
   describe("createG3FileFactory", () => {
     it("should create a G3File with absolute path", async () => {
       const absolutePath = "/home/user/documents/report.pdf";
-      const result = await g3FileFactory(absolutePath);
+      const description = "Test file description";
+      const result = await g3FileFactory(absolutePath, description);
 
       assert.strictEqual(result.filename, "report.pdf");
       assert.strictEqual(result.filepath, absolutePath);
@@ -28,6 +29,7 @@ describe("G3File", () => {
         result.g3Filepath,
         "/home/fakeuser/.local/share/g3/files/report.pdf.g3.json",
       );
+      assert.strictEqual(result.description, description);
     });
   });
 

@@ -14,9 +14,10 @@ export class G3File {
   filepath: string;
   filesystemDataEntry: FilesystemDataEntry;
   exists: boolean;
+  description: string;
   private findex: number;
 
-  constructor(fpath: string, dataFolder: string) {
+  constructor(fpath: string, dataFolder: string, description: string) {
     this.filename = path.basename(fpath);
     this.g3Filename = `${this.filename}.g3.json`;
     this.g3Filepath = path.join(dataFolder, this.g3Filename);
@@ -27,6 +28,7 @@ export class G3File {
       entries: [],
       createdAt: new Date().toISOString(),
     };
+    this.description = description;
   }
 
   hasMultipleGistEntries(): boolean {
@@ -43,8 +45,8 @@ export const createG3FileFactory =
     { config }: G3Dependecies,
     getG3Entry: (g3file: G3File) => Promise<FilesystemDataEntry> = getG3FSEntry,
   ) =>
-  async (fpath: string): Promise<G3File> => {
-    const g3file: G3File = new G3File(fpath, config.DATA_FOLDER);
+  async (fpath: string, description: string = ""): Promise<G3File> => {
+    const g3file: G3File = new G3File(fpath, config.DATA_FOLDER, description);
     try {
       const filesystemDataEntry = await getG3Entry(g3file);
       g3file.filesystemDataEntry = filesystemDataEntry;
