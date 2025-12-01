@@ -5,6 +5,7 @@ import { resolve } from "path";
 import Piscina from "piscina";
 import { G3File } from "../g3file";
 import { filename, ProcessFileChunkParam } from "./worker";
+import { G3Config } from "../config";
 
 const piscina = new Piscina({
   filename: resolve(__dirname, "./workerWrapper.js"),
@@ -38,6 +39,7 @@ export async function decryptFilesInFolder(
 
 export async function uploadGist(
   g3File: G3File,
+  config: G3Config,
   chunkSize: number = 1024 * 1024, // 1MB default
 ) {
   const stats = await fs.stat(g3File.filepath);
@@ -54,6 +56,8 @@ export async function uploadGist(
       start,
       end,
       chunkIndex: i,
+      g3File,
+      config,
     };
     tasks.push(
       piscina.run(
@@ -63,6 +67,7 @@ export async function uploadGist(
         { name: "processGistChunk" },
       ),
     );
-    await Promise.all(tasks);
   }
+  console.log(`Uploading chunks in parallel ...`);
+  await Promise.all(tasks);
 }
