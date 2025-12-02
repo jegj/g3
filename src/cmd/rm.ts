@@ -17,6 +17,7 @@ export default async function rm(argv: ArgumentsCamelCase) {
   await deleteG3Entry(g3File);
 }
 
+//FIXME: WHEN THERE IS NOT FILES TO DELETE
 function deleteG3FileGistsFactory(dependencies: G3Dependecies) {
   const deleteGist = deleteGistFactory(dependencies);
   return async function deleteG3FileGists(g3File: G3File): Promise<void> {
