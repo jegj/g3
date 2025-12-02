@@ -3,9 +3,9 @@ import * as os from "os";
 import * as path from "path";
 import { resolve } from "path";
 import Piscina from "piscina";
+import { G3Config } from "../config";
 import { G3File } from "../g3file";
 import { filename, ProcessFileChunkParam } from "./worker";
-import { G3Config } from "../config";
 
 const piscina = new Piscina({
   filename: resolve(__dirname, "./workerWrapper.js"),
@@ -53,6 +53,7 @@ export async function uploadGist(
     const end = Math.min(start + chunkSize, fileSize);
     const task: ProcessFileChunkParam = {
       filePath: g3File.filepath,
+      sortableFileName: g3File.sortableFileName,
       start,
       end,
       chunkIndex: i,

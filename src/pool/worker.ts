@@ -1,13 +1,13 @@
 import * as fs from "fs";
 import { resolve } from "path";
 import { parentPort } from "worker_threads";
-import { decryptAESGCM, encryptAESGCM } from "../crypto/";
-import { G3File } from "../g3file";
-import { GistFilesRequest, GistResponse } from "../gist/types";
-import { GistDataEntry } from "../fsdata/types";
-import { appendG3FSEntry } from "../fsdata";
 import { G3Config } from "../config";
+import { decryptAESGCM, encryptAESGCM } from "../crypto/";
+import { appendG3FSEntry } from "../fsdata";
+import { GistDataEntry } from "../fsdata/types";
+import { G3File } from "../g3file";
 import { createGistFactory } from "../gist";
+import { GistFilesRequest, GistResponse } from "../gist/types";
 import { G3Dependecies } from "../types";
 
 export const filename = resolve(__filename);
@@ -26,6 +26,7 @@ export function decryptFile({ file, password }: DecryptFileInput) {
 
 export interface ProcessFileChunkParam {
   filePath: string;
+  sortableFileName: string;
   start: number;
   end: number;
   chunkIndex: number;
@@ -34,20 +35,31 @@ export interface ProcessFileChunkParam {
 }
 
 export async function processGistChunk(params: ProcessFileChunkParam) {
-  const { filePath, start, end, chunkIndex, g3File, config } = params;
+  const { filePath, sortableFileName, start, end, chunkIndex, g3File, config } =
+    params;
   const chunkSize = end - start;
+  parentPort?.postMessage(
+    `Processing gist chunk ${chunkIndex} of size ${chunkSize}`,
+  );
   try {
     const dependencies: G3Dependecies = { config };
     const createGist = createGistFactory(dependencies);
     const fd = fs.openSync(filePath, "r");
     const buffer = Buffer.alloc(chunkSize);
     const bytesRead = fs.readSync(fd, buffer, 0, chunkSize, start);
+    console.log("bytesRead:", bytesRead);
     const encryptedContent = encryptAESGCM(
-      bytesRead.toString(),
+      buffer.toString("utf-8"),
       config.AES_KEY,
     );
+    console.log(
+      "--->g3File.sortableFileName:",
+      sortableFileName,
+      g3File.description,
+      g3File.filepath,
+    );
     const gistFiles: GistFilesRequest = {
-      [g3File.sortableFileName]: {
+      [sortableFileName]: {
         content: String(encryptedContent),
       },
     };
