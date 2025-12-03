@@ -1,5 +1,6 @@
 import { ArgumentsCamelCase } from "yargs";
 import { createConfigFromArgv } from "../config";
+import { g3Error } from "../error";
 import { deleteG3Entry } from "../fsdata";
 import { GistDataEntry } from "../fsdata/types";
 import { createG3FileFactory, G3File } from "../g3file";
@@ -13,11 +14,14 @@ export default async function rm(argv: ArgumentsCamelCase) {
   const deleteG3FileGists = deleteG3FileGistsFactory(dependencies);
   const file = argv.file as string;
   const g3File = await createG3File(file);
-  await deleteG3FileGists(g3File);
-  await deleteG3Entry(g3File);
+  if (g3File.exists) {
+    await deleteG3FileGists(g3File);
+    await deleteG3Entry(g3File);
+  } else {
+    throw g3Error(`File ${file} does not exist in g3data.`);
+  }
 }
 
-//FIXME: WHEN THERE IS NOT FILES TO DELETE
 function deleteG3FileGistsFactory(dependencies: G3Dependecies) {
   const deleteGist = deleteGistFactory(dependencies);
   return async function deleteG3FileGists(g3File: G3File): Promise<void> {
