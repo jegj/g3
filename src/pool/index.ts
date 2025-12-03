@@ -40,7 +40,7 @@ export async function decryptFilesInFolder(
 export async function uploadGist(
   g3File: G3File,
   config: G3Config,
-  chunkSize: number = 1024 * 1024, // 1MB default
+  chunkSize: number,
 ) {
   const stats = await fs.stat(g3File.filepath);
   const fileSize = stats.size;
