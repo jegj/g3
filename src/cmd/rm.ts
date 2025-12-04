@@ -11,25 +11,13 @@ export default async function rm(argv: ArgumentsCamelCase) {
   const config = createConfigFromArgv(argv);
   const dependencies: G3Dependecies = { config };
   const createG3File = createG3FileFactory(dependencies);
-  const deleteG3FileGists = deleteG3FileGistsFactory(dependencies);
+  const deleteGist = deleteGistFactory(dependencies);
   const file = argv.file as string;
   const g3File = await createG3File(file);
   if (g3File.exists) {
-    await deleteG3FileGists(g3File);
+    await Promise.all(g3File.gists.map((e: GistDataEntry) => deleteGist(e.id)));
     await deleteG3Entry(g3File);
   } else {
     throw g3Error(`File ${file} does not exist in g3data.`);
   }
-}
-
-function deleteG3FileGistsFactory(dependencies: G3Dependecies) {
-  const deleteGist = deleteGistFactory(dependencies);
-  return async function deleteG3FileGists(g3File: G3File): Promise<void> {
-    //TODO: What if fail because one call fail
-    await Promise.all(
-      g3File.filesystemDataEntry.entries.map((e: GistDataEntry) =>
-        deleteGist(e.id),
-      ),
-    );
-  };
 }

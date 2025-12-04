@@ -1,6 +1,6 @@
 import path from "path";
 import { getG3FSEntry } from "../fsdata";
-import { FilesystemDataEntry } from "../fsdata/types";
+import { FilesystemDataEntry, GistDataEntry } from "../fsdata/types";
 import { G3Dependecies } from "../types";
 import { resolvePath } from "../utils";
 
@@ -37,6 +37,10 @@ export class G3File {
 
   get sortableFileName(): string {
     return `${(this.findex++).toString().padStart(ZERO_PAD, "0")}-${this.filename}`;
+  }
+
+  get gists(): GistDataEntry[] {
+    return this.filesystemDataEntry.entries;
   }
 }
 
