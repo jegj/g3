@@ -18,6 +18,6 @@ export default async function rm(argv: ArgumentsCamelCase) {
     await Promise.all(g3File.gists.map((e: GistDataEntry) => deleteGist(e.id)));
     await deleteG3Entry(g3File);
   } else {
-    throw g3Error(`File ${file} does not exist in g3data.`);
+    throw g3Error(`File ${file} does not exist in g3.`);
   }
 }
