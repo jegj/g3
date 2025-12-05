@@ -4,6 +4,8 @@ import * as path from "path";
 import { resolve } from "path";
 import Piscina from "piscina";
 import { G3Config } from "../config";
+import { appendG3FSEntry } from "../fsdata";
+import { GistDataEntry } from "../fsdata/types";
 import { G3File } from "../g3file";
 import { filename, ProcessFileChunkParam } from "./worker";
 
@@ -37,7 +39,7 @@ export async function decryptFilesInFolder(
   }
 }
 
-export async function uploadGist(
+export async function uploadFile(
   g3File: G3File,
   config: G3Config,
   chunkSize: number,
@@ -47,7 +49,7 @@ export async function uploadGist(
   const numChunks = Math.ceil(fileSize / chunkSize);
   console.log(`File size: ${fileSize} bytes`);
   console.log(`Reading in ${numChunks} chunks ...`);
-  const tasks: Promise<void>[] = [];
+  const tasks: Promise<GistDataEntry>[] = [];
   for (let i = 0; i < numChunks; i++) {
     const start = i * chunkSize;
     const end = Math.min(start + chunkSize, fileSize);
@@ -69,6 +71,6 @@ export async function uploadGist(
       ),
     );
   }
-  console.log(`Uploading chunks in parallel ...`);
-  await Promise.all(tasks);
+  const entries = await Promise.all(tasks);
+  await appendG3FSEntry(entries, g3File);
 }

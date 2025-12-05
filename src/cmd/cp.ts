@@ -1,7 +1,7 @@
 import { ArgumentsCamelCase } from "yargs";
 import { createConfigFromArgv } from "../config";
 import { createG3FileFactory } from "../g3file";
-import { uploadGist } from "../pool";
+import { uploadFile } from "../pool";
 import { G3Dependecies } from "../types";
 
 const chunkSize = 1024 * 1024 * 5; // 5MB default
@@ -13,5 +13,5 @@ export default async function cp(argv: ArgumentsCamelCase) {
   const description = argv.description as string;
   const file = argv.file as string;
   const g3File = await createG3File(file, description);
-  await uploadGist(g3File, config, chunkSize);
+  await uploadFile(g3File, config, chunkSize);
 }

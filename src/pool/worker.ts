@@ -3,7 +3,6 @@ import { resolve } from "path";
 import { parentPort } from "worker_threads";
 import { G3Config } from "../config";
 import { decryptAESGCM, encryptAESGCM } from "../crypto/";
-import { appendG3FSEntry } from "../fsdata";
 import { GistDataEntry } from "../fsdata/types";
 import { G3File } from "../g3file";
 import { createGistFactory } from "../gist";
@@ -34,7 +33,9 @@ export interface ProcessFileChunkParam {
   config: G3Config;
 }
 
-export async function processGistChunk(params: ProcessFileChunkParam) {
+export async function processGistChunk(
+  params: ProcessFileChunkParam,
+): Promise<GistDataEntry> {
   const { filePath, sortableFileName, start, end, chunkIndex, g3File, config } =
     params;
   const chunkSize = end - start;
@@ -69,16 +70,14 @@ export async function processGistChunk(params: ProcessFileChunkParam) {
       false,
     );
     resp = deleteContentFromGistReponse(resp);
-    const entries: GistDataEntry[] = [
-      {
-        id: resp.id,
-        gistUrl: resp.url,
-        gistPullUrl: resp.git_pull_url,
-        files: resp.files,
-      },
-    ];
-    await appendG3FSEntry(entries, g3File);
+    const entry: GistDataEntry = {
+      id: resp.id,
+      gistUrl: resp.url,
+      gistPullUrl: resp.git_pull_url,
+      files: resp.files,
+    };
     fs.closeSync(fd);
+    return entry;
   } catch (error) {
     throw new Error(`Failed to read chunk ${chunkIndex}: ${error}`);
   }
