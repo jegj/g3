@@ -56,6 +56,7 @@ yargs(argv)
     }
   })
   .command({
+    //TODO: Add options to show how many gist are involves in this file
     command: "ls",
     describe: "Show all the files in your storage",
     builder: (yargs) => {
