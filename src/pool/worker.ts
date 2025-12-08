@@ -83,6 +83,7 @@ export async function processGistChunk(
   }
 }
 
+//TODO: MOVE THIS TO A BETTER PLACE
 function deleteContentFromGistReponse(resp: GistResponse) {
   Object.values(resp.files).forEach((file) => {
     if (file && file.content) {
