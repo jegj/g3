@@ -1,6 +1,6 @@
 import { spawn } from "child_process";
 
-//TODO: This use the git local installation
+//TODO: This use the git local installation, try to use GIT token instead
 export async function gitClone(url: string, folder: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const gitProcess = spawn("git", ["clone", url, folder]);
