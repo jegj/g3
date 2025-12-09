@@ -1,7 +1,24 @@
 import { spawn } from "child_process";
+import { GistDataEntry } from "../fsdata/types";
+import { createTempFolder } from "../utils";
+
+// TODO: Optimize to clone all gists in parallel with a limit
+export async function cloneGistEntries(
+  entries: GistDataEntry[],
+  temporalFolder: string,
+): Promise<void> {
+  for (const entry of entries) {
+    console.log(`Cloning gist ${entry.gistPullUrl} ...`);
+    const subTemporalFolder = await createTempFolder(
+      temporalFolder,
+      `gist_${entry.id}`,
+    );
+    await gitClone(entry.gistPullUrl, subTemporalFolder);
+  }
+}
 
 //TODO: This use the git local installation, try to use GIT token instead
-export async function gitClone(url: string, folder: string): Promise<void> {
+async function gitClone(url: string, folder: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const gitProcess = spawn("git", ["clone", url, folder]);
 

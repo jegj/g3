@@ -3,7 +3,7 @@ import { ArgumentsCamelCase } from "yargs";
 import { createConfigFromArgv } from "../config";
 import { g3Error } from "../error";
 import { createG3FileFactory } from "../g3file";
-import { gitClone } from "../git";
+import { cloneGistEntries } from "../git";
 import { decryptFilesInFolder } from "../pool";
 import { G3Dependecies } from "../types";
 import {
@@ -28,15 +28,9 @@ export default async function get(argv: ArgumentsCamelCase) {
   console.log(`Getting file ${file} to ${temporalFolder}/`);
   if (g3File.exists) {
     await deleteFolderIfExists(temporalFolder);
-    //FIXME: .git FOLDER is causing problems
-    for (const entry of g3File.filesystemDataEntry.entries) {
-      console.log(`Cloning gist ${entry.gistPullUrl} ...`);
-      await gitClone(entry.gistPullUrl, temporalFolder);
-      await deleteFolderIfExists(join(temporalFolder, ".git"));
-    }
+    await cloneGistEntries(g3File.filesystemDataEntry.entries, temporalFolder);
     await decryptFilesInFolder(temporalFolder, config.AES_KEY);
     await mergeFilesStreaming(finalFilePath, temporalFolder);
-    await deleteFolderIfExists(temporalFolder);
   } else {
     throw g3Error(`File ${file} does not exist in g3`);
   }
