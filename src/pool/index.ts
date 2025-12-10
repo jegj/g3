@@ -26,15 +26,21 @@ export async function decryptFilesInFolder(
   folder: string,
   descryptPassword: string,
 ) {
-  const files = await fs.readdir(folder);
-  for (const file of files) {
-    const fullPath = path.join(folder, file);
-    const stats = await fs.stat(fullPath);
-    if (stats.isFile()) {
-      await piscina.run(
-        { file: fullPath, password: descryptPassword },
-        { name: "decryptFile" },
-      );
+  const entries = await fs.readdir(folder, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(folder, entry.name);
+    if (entry.isDirectory() && entry.name.startsWith("gist_")) {
+      const subEntries = await fs.readdir(fullPath);
+      for (const subFile of subEntries) {
+        const subFullPath = path.join(fullPath, subFile);
+        const stats = await fs.stat(subFullPath);
+        if (stats.isFile()) {
+          await piscina.run(
+            { file: subFullPath, password: descryptPassword },
+            { name: "decryptFile" },
+          );
+        }
+      }
     }
   }
 }
