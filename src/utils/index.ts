@@ -1,5 +1,5 @@
 import { createReadStream, createWriteStream } from "fs";
-import { mkdir, readdir, rm } from "fs/promises";
+import { mkdir, readdir, rm, stat } from "fs/promises";
 import os from "os";
 import path, { join } from "path";
 import { pipeline } from "stream/promises";
@@ -31,18 +31,21 @@ export async function mergeFilesStreaming(
   outputFile: string,
   searchDir: string = ".",
 ): Promise<void> {
-  const files = await readdir(searchDir);
-  const matchedFiles = files
-    .filter((file) => file !== ".git")
-    .sort()
-    .map((file) => join(searchDir, file));
-
   const output = createWriteStream(outputFile);
-
-  for (const file of matchedFiles) {
-    const input = createReadStream(file);
-    await pipeline(input, output, { end: false });
+  const entries = await readdir(searchDir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(searchDir, entry.name);
+    if (entry.isDirectory() && entry.name.includes("gist_")) {
+      const subEntries = await readdir(fullPath);
+      for (const subFile of subEntries) {
+        const subFullPath = path.join(fullPath, subFile);
+        const stats = await stat(subFullPath);
+        if (stats.isFile() && subFile !== ".git") {
+          const input = createReadStream(subFullPath);
+          await pipeline(input, output, { end: false });
+        }
+      }
+    }
   }
-
   output.end();
 }

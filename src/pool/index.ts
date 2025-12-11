@@ -29,7 +29,7 @@ export async function decryptFilesInFolder(
   const entries = await fs.readdir(folder, { withFileTypes: true });
   for (const entry of entries) {
     const fullPath = path.join(folder, entry.name);
-    if (entry.isDirectory() && entry.name.startsWith("gist_")) {
+    if (entry.isDirectory() && entry.name.includes("gist_")) {
       const subEntries = await fs.readdir(fullPath);
       for (const subFile of subEntries) {
         const subFullPath = path.join(fullPath, subFile);
