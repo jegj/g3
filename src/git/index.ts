@@ -7,13 +7,16 @@ export async function cloneGistEntries(
   entries: GistDataEntry[],
   temporalFolder: string,
 ): Promise<void> {
+  let index = 1;
   for (const entry of entries) {
     console.log(`Cloning gist ${entry.gistPullUrl} ...`);
+    const paddedIndex = index.toString().padStart(3, "0");
     const subTemporalFolder = await createTempFolder(
       temporalFolder,
-      `gist_${entry.id}`,
+      `${paddedIndex}_gist_${entry.id}`,
     );
     await gitClone(entry.gistPullUrl, subTemporalFolder);
+    index++;
   }
 }
 
