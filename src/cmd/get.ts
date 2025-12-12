@@ -25,7 +25,6 @@ export default async function get(argv: ArgumentsCamelCase) {
     g3File.filename,
   );
   const finalFilePath = join(fileDestination, g3File.filename);
-  console.log(`Getting file ${file} to ${temporalFolder}/`);
   if (g3File.exists) {
     await deleteFolderIfExists(temporalFolder);
     await cloneGistEntries(g3File.filesystemDataEntry.entries, temporalFolder);

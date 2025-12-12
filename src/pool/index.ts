@@ -53,8 +53,6 @@ export async function uploadFile(
   const stats = await fs.stat(g3File.filepath);
   const fileSize = stats.size;
   const numChunks = Math.ceil(fileSize / chunkSize);
-  console.log(`File size: ${fileSize} bytes`);
-  console.log(`Reading in ${numChunks} chunks ...`);
   const tasks: Promise<GistDataEntry>[] = [];
   for (let i = 0; i < numChunks; i++) {
     const start = i * chunkSize;
