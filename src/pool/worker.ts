@@ -39,9 +39,6 @@ export async function processGistChunk(
   const { filePath, sortableFileName, start, end, chunkIndex, g3File, config } =
     params;
   const chunkSize = end - start;
-  parentPort?.postMessage(
-    `Processing gist chunk ${chunkIndex} of size ${chunkSize}`,
-  );
   try {
     const dependencies: G3Dependecies = { config };
     const createGist = createGistFactory(dependencies);
@@ -52,12 +49,6 @@ export async function processGistChunk(
     const encryptedContent = encryptAESGCM(
       buffer.toString("utf-8"),
       config.AES_KEY,
-    );
-    console.log(
-      "--->g3File.sortableFileName:",
-      sortableFileName,
-      g3File.description,
-      g3File.filepath,
     );
     const gistFiles: GistFilesRequest = {
       [sortableFileName]: {
