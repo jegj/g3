@@ -13,6 +13,7 @@ import {
   resolvePath,
 } from "../utils";
 
+//TODO: Delete temporal folder
 export default async function get(argv: ArgumentsCamelCase) {
   const config = createConfigFromArgv(argv);
   const dependencies: G3Dependecies = { config };
