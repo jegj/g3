@@ -27,7 +27,11 @@ export default async function get(argv: ArgumentsCamelCase) {
   const finalFilePath = join(fileDestination, g3File.filename);
   if (g3File.exists) {
     await deleteFolderIfExists(temporalFolder);
-    await cloneGistEntries(g3File.filesystemDataEntry.entries, temporalFolder);
+    await cloneGistEntries(
+      g3File.filesystemDataEntry.entries,
+      temporalFolder,
+      config.GITHUB_TOKEN,
+    );
     await decryptFilesInFolder(temporalFolder, config.AES_KEY);
     await mergeFilesStreaming(finalFilePath, temporalFolder);
   } else {

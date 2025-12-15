@@ -6,6 +6,7 @@ import { createTempFolder } from "../utils";
 export async function cloneGistEntries(
   entries: GistDataEntry[],
   temporalFolder: string,
+  token: string,
 ): Promise<void> {
   let index = 1;
   for (const entry of entries) {
@@ -14,37 +15,38 @@ export async function cloneGistEntries(
       temporalFolder,
       `${paddedIndex}_gist_${entry.id}`,
     );
-    await gitClone(entry.gistPullUrl, subTemporalFolder);
+    await gitClone(entry.gistPullUrl, subTemporalFolder, token);
     index++;
   }
 }
 
-//TODO: This use the git local installation, try to use GIT token instead
-async function gitClone(url: string, folder: string): Promise<void> {
+async function gitClone(
+  url: string,
+  destination: string,
+  token: string,
+): Promise<void> {
   return new Promise((resolve, reject) => {
-    const gitProcess = spawn("git", ["clone", url, folder]);
+    // Inject token into the URL for authentication
+    const authenticatedUrl = url.replace("https://", `https://${token}@`);
+
+    const gitProcess = spawn("git", ["clone", authenticatedUrl, destination]);
 
     let stderr = "";
 
-    gitProcess.stdout.on("data", (data) => {
-      console.log(data.toString());
-    });
-
     gitProcess.stderr.on("data", (data) => {
       stderr += data.toString();
-      console.error(data.toString());
     });
 
     gitProcess.on("close", (code) => {
-      if (code === 0) {
-        resolve();
+      if (code !== 0) {
+        reject(new Error(`Git clone failed: ${stderr}`));
       } else {
-        reject(new Error(`git clone failed with code ${code}: ${stderr}`));
+        resolve();
       }
     });
 
     gitProcess.on("error", (error) => {
-      reject(new Error(`Failed to start git process: ${error.message}`));
+      reject(new Error(`Failed to spawn git process: ${error.message}`));
     });
   });
 }
