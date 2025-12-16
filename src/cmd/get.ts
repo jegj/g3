@@ -13,7 +13,6 @@ import {
   resolvePath,
 } from "../utils";
 
-//TODO: Delete temporal folder
 export default async function get(argv: ArgumentsCamelCase) {
   const config = createConfigFromArgv(argv);
   const dependencies: G3Dependecies = { config };
@@ -35,6 +34,7 @@ export default async function get(argv: ArgumentsCamelCase) {
     );
     await decryptFilesInFolder(temporalFolder, config.AES_KEY);
     await mergeFilesStreaming(finalFilePath, temporalFolder);
+    await deleteFolderIfExists(temporalFolder);
   } else {
     throw g3Error(`File ${file} does not exist in g3`);
   }
