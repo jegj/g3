@@ -7,6 +7,7 @@ import { GistDataEntry } from "../fsdata/types";
 import { G3File } from "../g3file";
 import { createGistFactory } from "../gist";
 import { GistFilesRequest, GistResponse } from "../gist/types";
+import { deleteContentFromGistReponse } from "../gist/utils";
 import { G3Dependecies } from "../types";
 
 export const filename = resolve(__filename);
@@ -71,14 +72,4 @@ export async function processGistChunk(
   } catch (error) {
     throw new Error(`Failed to read chunk ${chunkIndex}: ${error}`);
   }
-}
-
-//TODO: MOVE THIS TO A BETTER PLACE
-function deleteContentFromGistReponse(resp: GistResponse) {
-  Object.values(resp.files).forEach((file) => {
-    if (file && file.content) {
-      file.content = "";
-    }
-  });
-  return resp;
 }
