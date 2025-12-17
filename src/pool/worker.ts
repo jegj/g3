@@ -44,8 +44,7 @@ export async function processGistChunk(
     const createGist = createGistFactory(dependencies);
     const fd = fs.openSync(filePath, "r");
     const buffer = Buffer.alloc(chunkSize);
-    const bytesRead = fs.readSync(fd, buffer, 0, chunkSize, start);
-    console.log("bytesRead:", bytesRead);
+    fs.readSync(fd, buffer, 0, chunkSize, start);
     const encryptedContent = encryptAESGCM(
       buffer.toString("utf-8"),
       config.AES_KEY,
