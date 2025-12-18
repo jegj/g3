@@ -1,9 +1,9 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
 import { G3Config } from "../../src/config";
+import { FilesystemDataEntry } from "../../src/fsdata/types";
 import { createG3FileFactory } from "../../src/g3file";
 import { G3Dependecies } from "../../src/types";
-import { FilesystemDataEntry } from "../../src/fsdata/types";
 import { generateMockGistDataEntry } from "../factories/gistDataEntry.mock";
 
 const g3ConfigMock: G3Config = {

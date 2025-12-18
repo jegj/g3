@@ -18,6 +18,9 @@
   "linter": {
     "enabled": true,
     "rules": {
+      "nursery": {
+        "useMaxParams": "error"
+      },
       "recommended": false,
       "complexity": { "noUselessTypeConstraint": "error" },
       "correctness": { "noUnusedVariables": "warn" },
