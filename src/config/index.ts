@@ -22,6 +22,10 @@ export const G3ConfigSchema = z.object({
     .string()
     .transform((val) => (val?.trim() === "" ? undefined : val))
     .default(DEFAULT_DATA_FILEPATH),
+  CHUNK_SIZE: z
+    .number()
+    .min(1024 * 1024 * 5, "Chunk size must be at least 5MB")
+    .default(10 * 1024 * 1024), // 10 MB
 });
 
 export type G3Config = z.infer<typeof G3ConfigSchema>;

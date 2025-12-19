@@ -44,8 +44,8 @@ export async function decryptFilesInFolder(
 export async function uploadFile(
   g3File: G3File,
   config: G3Config,
-  chunkSize: number,
-) {
+): Promise<void> {
+  const chunkSize = config.CHUNK_SIZE;
   const stats = await fs.stat(g3File.filepath);
   const fileSize = stats.size;
   const numChunks = Math.ceil(fileSize / chunkSize);
