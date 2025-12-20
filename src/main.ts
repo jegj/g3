@@ -83,7 +83,6 @@ yargs(argv)
         })
         .usage("$0 cp <source>")
         .example(
-          // eslint-disable-next-line quotes
           '$0 cp ./myfile.txt -d "My importan file"',
           "Copy myfile.txt to storage with same name",
         )
@@ -143,7 +142,7 @@ yargs(argv)
       await rm(argv);
     },
   })
-  .fail((msg, err, yargs) => {
+  .fail((_msg, err) => {
     if ("isOperational" in err && err.isOperational) {
       console.error(kleur.red(`Error: ${err.message}`));
     } else {
