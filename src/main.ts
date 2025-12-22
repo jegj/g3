@@ -38,7 +38,6 @@ yargs(argv)
       const config = parseG3Config(configPath);
       // FIXME: vebose is added into argv but should be part of config also to make it available globally
       Object.assign(argv, config);
-      console.log(config);
       createDataFile(config.DATA_FOLDER, Boolean(argv.verbose));
       if (argv.verbose) {
         console.log("Config loaded successfully");
