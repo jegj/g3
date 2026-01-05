@@ -26,6 +26,7 @@ export const G3ConfigSchema = z.object({
     .number()
     .min(1024 * 1024 * 5, "Chunk size must be at least 5MB")
     .default(10 * 1024 * 1024), // 10 MB
+  VERBOSE: z.boolean().default(false),
 });
 
 export type G3Config = z.infer<typeof G3ConfigSchema>;
