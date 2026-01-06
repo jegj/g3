@@ -1,6 +1,5 @@
 import * as fs from "fs";
 import { resolve } from "path";
-import { parentPort } from "worker_threads";
 import { G3Config } from "../config";
 import { decryptAESGCM, encryptAESGCM } from "../crypto/";
 import { GistDataEntry } from "../fsdata/types";
@@ -18,7 +17,6 @@ interface DecryptFileInput {
 }
 
 export function decryptFile({ file, password }: DecryptFileInput) {
-  parentPort?.postMessage(`Decrypting file ${file}`);
   const content = fs.readFileSync(file, { encoding: "utf-8" });
   const decryptedContent = decryptAESGCM(content, password);
   fs.writeFileSync(file, decryptedContent);
