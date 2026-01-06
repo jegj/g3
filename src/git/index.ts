@@ -1,26 +1,6 @@
 import { spawn } from "child_process";
-import { GistDataEntry } from "../fsdata/types";
-import { createTempFolder } from "../utils";
 
-// TODO: Optimize to clone all gists in parallel with a limit
-export async function cloneGistEntries(
-  entries: GistDataEntry[],
-  temporalFolder: string,
-  token: string,
-): Promise<void> {
-  let index = 1;
-  for (const entry of entries) {
-    const paddedIndex = index.toString().padStart(3, "0");
-    const subTemporalFolder = await createTempFolder(
-      temporalFolder,
-      `${paddedIndex}_gist_${entry.id}`,
-    );
-    await gitClone(entry.gistPullUrl, subTemporalFolder, token);
-    index++;
-  }
-}
-
-async function gitClone(
+export async function gitClone(
   url: string,
   destination: string,
   token: string,

@@ -7,6 +7,7 @@ import { G3Config } from "../config";
 import { appendG3FSEntry } from "../fsdata";
 import { GistDataEntry } from "../fsdata/types";
 import { G3File } from "../g3file";
+import { createTempFolder } from "../utils";
 import { filename, ProcessFileChunkParam } from "./worker";
 
 const piscina = new Piscina({
@@ -73,4 +74,32 @@ export async function uploadFile(
   }
   const entries = await Promise.all(tasks);
   await appendG3FSEntry(entries, g3File);
+}
+
+export async function cloneGistEntries(
+  entries: GistDataEntry[],
+  temporalFolder: string,
+  token: string,
+): Promise<void> {
+  let index = 1;
+  const tasks: Promise<void>[] = [];
+  for (const entry of entries) {
+    const paddedIndex = index.toString().padStart(3, "0");
+    const subTemporalFolder = await createTempFolder(
+      temporalFolder,
+      `${paddedIndex}_gist_${entry.id}`,
+    );
+    tasks.push(
+      piscina.run(
+        {
+          gistPullUrl: entry.gistPullUrl,
+          subTemporalFolder,
+          token,
+        },
+        { name: "processGistChunk" },
+      ),
+    );
+    index++;
+  }
+  await Promise.all(tasks);
 }

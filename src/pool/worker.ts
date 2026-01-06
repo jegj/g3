@@ -8,6 +8,7 @@ import { createGistFactory } from "../gist";
 import { GistFilesRequest, GistResponse } from "../gist/types";
 import { deleteContentFromGistReponse } from "../gist/utils";
 import { G3Dependecies } from "../types";
+import { gitClone } from "../git";
 
 export const filename = resolve(__filename);
 
@@ -70,4 +71,14 @@ export async function processGistChunk(
   } catch (error) {
     throw new Error(`Failed to read chunk ${chunkIndex}: ${error}`);
   }
+}
+
+export interface CloneRepoParams {
+  gistPullUrl: string;
+  subTemporalFolder: string;
+  token: string;
+}
+
+export async function cloneRepo(params: CloneRepoParams): Promise<void> {
+  await gitClone(params.gistPullUrl, params.subTemporalFolder, params.token);
 }

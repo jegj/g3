@@ -3,8 +3,7 @@ import { ArgumentsCamelCase } from "yargs";
 import { createConfigFromArgv } from "../config";
 import { g3Error } from "../error";
 import { createG3FileFactory } from "../g3file";
-import { cloneGistEntries } from "../git";
-import { decryptFilesInFolder } from "../pool";
+import { cloneGistEntries, decryptFilesInFolder } from "../pool";
 import { G3Dependecies } from "../types";
 import {
   createTempFolder,
