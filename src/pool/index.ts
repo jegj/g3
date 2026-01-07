@@ -96,7 +96,7 @@ export async function cloneGistEntries(
           subTemporalFolder,
           token,
         },
-        { name: "processGistChunk" },
+        { name: "cloneRepo" },
       ),
     );
     index++;
