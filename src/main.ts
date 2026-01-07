@@ -40,7 +40,7 @@ yargs(argv)
       Object.assign(argv, config);
       createDataFile(config.DATA_FOLDER, Boolean(argv.verbose));
       if (argv.verbose) {
-        console.log("Config loaded successfully");
+        console.log("[DEBUG] Config loaded successfully");
       }
     } catch (error) {
       console.error(
