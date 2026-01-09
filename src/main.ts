@@ -57,12 +57,17 @@ yargs(argv)
     }
   })
   .command({
-    //TODO: Add options to show how many gist are involves in this file
     command: "ls",
     describe: "Show all the files in your storage",
     builder: (yargs) => {
       return yargs
         .usage("$0 ls")
+        .option("gist", {
+          alias: "g",
+          type: "boolean",
+          description: "Include the gist used for storing this file",
+          default: false,
+        })
         .example("$0 ls", "List all files in your storage")
         .epilog("Lists all files stored in your configured storage location");
     },

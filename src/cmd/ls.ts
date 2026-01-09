@@ -8,6 +8,7 @@ export default async function ls(argv: ArgumentsCamelCase) {
   const dependencies: G3Dependecies = { config };
   const getG3Entries = createG3EntriesFactory(dependencies);
   const entries = await getG3Entries();
+  const showGist = argv.gist as boolean;
   for (const entry of entries) {
     console.log(entry);
   }
