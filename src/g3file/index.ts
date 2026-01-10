@@ -66,3 +66,17 @@ export const createG3FileFactory =
     }
     return g3file;
   };
+
+export const parseG3FileFactory =
+  (
+    { config }: G3Dependecies,
+    getG3Entry: (g3file: G3File) => Promise<FilesystemDataEntry> = getG3FSEntry,
+  ) =>
+  async (dataFilePath: string): Promise<G3File> => {
+    const fpath = path.basename(dataFilePath).replace(/\.g3\.json$/, "");
+    const g3file = new G3File(fpath, config.DATA_FOLDER, "");
+    const filesystemDataEntry = await getG3Entry(g3file);
+    g3file.filesystemDataEntry = filesystemDataEntry;
+    g3file.exists = true;
+    return g3file;
+  };
