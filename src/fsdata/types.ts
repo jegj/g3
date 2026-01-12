@@ -3,6 +3,7 @@ import { GistFilesResponse } from "../gist/types";
 export type FilesystemDataEntry = {
   entries: GistDataEntry[];
   createdAt: string;
+  //TODO: Add description field
 };
 
 export type GistDataEntry = {
