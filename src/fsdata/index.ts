@@ -1,9 +1,7 @@
 import fs from "fs/promises";
-import { G3File } from "../g3file";
+import { G3File, parseG3FileFactory } from "../g3file";
 import { G3Dependecies } from "../types";
 import { FilesystemDataEntry, GistDataEntry } from "./types";
-
-const G3_FILE_EXTENSION_INDEX_REMOVAL = -8;
 
 export const getFileContent = async (g3File: G3File): Promise<string> => {
   return fs.readFile(g3File.filepath, { encoding: "utf-8" });
@@ -35,9 +33,12 @@ export const appendG3FSEntry = async (
   return;
 };
 
-export const createG3EntriesFactory =
+export const getG3EntriesFactory =
   ({ config }: G3Dependecies) =>
-  async (): Promise<string[]> => {
+  async (): Promise<G3File[]> => {
+    const dependencies: G3Dependecies = { config };
+    const parseG3File = parseG3FileFactory(dependencies);
+
     const files = await fs.readdir(config.DATA_FOLDER, {
       withFileTypes: true,
     });
@@ -46,9 +47,12 @@ export const createG3EntriesFactory =
       return [];
     }
 
-    return files
-      .filter((file) => file.isFile() && file.name.endsWith(".g3.json"))
-      .map((file) => file.name.slice(0, G3_FILE_EXTENSION_INDEX_REMOVAL));
+    return await Promise.all(
+      files
+        .filter((file) => file.isFile() && file.name.endsWith(".g3.json"))
+        .map((file) => file.name.replace(/\.g3\.json$/, ""))
+        .map((filename) => parseG3File(filename)),
+    );
   };
 
 export const deleteG3Entry = async (g3File: G3File): Promise<void> => {

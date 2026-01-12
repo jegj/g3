@@ -73,7 +73,7 @@ export const parseG3FileFactory =
     getG3Entry: (g3file: G3File) => Promise<FilesystemDataEntry> = getG3FSEntry,
   ) =>
   async (dataFilePath: string): Promise<G3File> => {
-    const fpath = path.basename(dataFilePath).replace(/\.g3\.json$/, "");
+    const fpath = path.basename(dataFilePath);
     const g3file = new G3File(fpath, config.DATA_FOLDER, "");
     const filesystemDataEntry = await getG3Entry(g3file);
     g3file.filesystemDataEntry = filesystemDataEntry;
