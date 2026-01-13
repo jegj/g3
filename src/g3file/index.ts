@@ -14,7 +14,6 @@ export class G3File {
   filepath: string;
   filesystemDataEntry: FilesystemDataEntry;
   exists: boolean;
-  description: string;
   private findex: number;
 
   constructor(fpath: string, dataFolder: string, description: string) {
@@ -27,8 +26,8 @@ export class G3File {
     this.filesystemDataEntry = {
       entries: [],
       createdAt: new Date().toISOString(),
+      description,
     };
-    this.description = description;
   }
 
   hasMultipleGistEntries(): boolean {
@@ -41,6 +40,10 @@ export class G3File {
 
   get gists(): GistDataEntry[] {
     return this.filesystemDataEntry.entries;
+  }
+
+  get description(): string {
+    return this.filesystemDataEntry.description;
   }
 }
 

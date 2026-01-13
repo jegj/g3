@@ -27,6 +27,7 @@ export const appendG3FSEntry = async (
   const dataEntry: FilesystemDataEntry = {
     entries,
     createdAt: new Date().toISOString(),
+    description: g3file.description,
   };
   const jsonData = JSON.stringify(dataEntry);
   await fs.writeFile(g3file.g3Filepath, jsonData);
