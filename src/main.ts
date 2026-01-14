@@ -57,6 +57,7 @@ yargs(argv)
     }
   })
   .command({
+    //TODO: Change option name to something that involves more metadata
     command: "ls",
     describe: "Show all the files in your storage",
     builder: (yargs) => {
