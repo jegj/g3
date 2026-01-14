@@ -8,9 +8,15 @@ export default async function ls(argv: ArgumentsCamelCase) {
   const dependencies: G3Dependecies = { config };
   const getG3Entries = getG3EntriesFactory(dependencies);
   const showGist = argv.gist as boolean;
-  //TODO: Add gist count and description display
+
   const entries = await getG3Entries();
   for (const entry of entries) {
-    console.log(entry.filename);
+    if (showGist) {
+      console.log(
+        `${entry.filename} - ${entry.description || "No description"} (${entry.gists?.length || 0} gists)`,
+      );
+    } else {
+      console.log(entry.filename);
+    }
   }
 }
