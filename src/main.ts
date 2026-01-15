@@ -57,16 +57,16 @@ yargs(argv)
     }
   })
   .command({
-    //TODO: Change option name to something that involves more metadata
     command: "ls",
     describe: "Show all the files in your storage",
     builder: (yargs) => {
       return yargs
         .usage("$0 ls")
-        .option("gist", {
-          alias: "g",
+        .option("full", {
+          alias: "f",
           type: "boolean",
-          description: "Include the gist used for storing this file",
+          description:
+            "Include the gist used for storing this file and more metadata",
           default: false,
         })
         .example("$0 ls", "List all files in your storage")
