@@ -150,6 +150,7 @@ yargs(argv)
     },
   })
   .fail((_msg, err) => {
+    //FIXME: PASSING WRONG FLAGS CAUSE THIS BLOCK TO FAIL
     if ("isOperational" in err && err.isOperational) {
       console.error(kleur.red(`Error: ${err.message}`));
     } else {
