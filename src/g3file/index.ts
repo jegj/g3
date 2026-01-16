@@ -5,6 +5,7 @@ import { G3Dependecies } from "../types";
 import { resolvePath } from "../utils";
 
 const ZERO_PAD = 3;
+const NO_DESCRIPTION = "No description";
 
 // A G3File represents a file in the G3 system.
 export class G3File {
@@ -42,8 +43,12 @@ export class G3File {
     return this.filesystemDataEntry.entries;
   }
 
+  get gistCount(): number {
+    return this.filesystemDataEntry.entries.length;
+  }
+
   get description(): string {
-    return this.filesystemDataEntry.description;
+    return this.filesystemDataEntry.description || NO_DESCRIPTION;
   }
 }
 
