@@ -7,11 +7,6 @@ export const getFileContent = async (g3File: G3File): Promise<string> => {
   return fs.readFile(g3File.filepath, { encoding: "utf-8" });
 };
 
-export const hasEntry = async (g3FIle: G3File): Promise<boolean> => {
-  fs.stat(g3FIle.g3Filepath);
-  return true;
-};
-
 export const getG3FSEntry = async (
   g3file: G3File,
 ): Promise<FilesystemDataEntry> => {
