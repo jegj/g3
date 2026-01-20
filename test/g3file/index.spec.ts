@@ -33,51 +33,6 @@ describe("G3File", () => {
     });
   });
 
-  describe("hasMultipleGistEntries", () => {
-    it("returns true with multiple entries", async () => {
-      const getG3FSEntryMock = async () => {
-        return {
-          entries: [generateMockGistDataEntry(1), generateMockGistDataEntry(1)],
-        } as FilesystemDataEntry;
-      };
-      const g3FileFactory = createG3FileFactory(dependencies, getG3FSEntryMock);
-      const g3file = await g3FileFactory("/path1/file1.txt");
-
-      assert.strictEqual(g3file.hasMultipleGistEntries(), true);
-    });
-
-    it("returns false with single entry having multiple files", async () => {
-      const getG3FSEntryMock = async () => {
-        return {
-          entries: [generateMockGistDataEntry(3)],
-        } as FilesystemDataEntry;
-      };
-      const g3FileFactory = createG3FileFactory(dependencies, getG3FSEntryMock);
-      const g3file = await g3FileFactory("/path1/file1.txt");
-
-      assert.strictEqual(g3file.hasMultipleGistEntries(), false);
-    });
-
-    it("returns false with single entry having one file", async () => {
-      const getG3FSEntryMock = async () => {
-        return {
-          entries: [generateMockGistDataEntry(1)],
-        } as FilesystemDataEntry;
-      };
-      const g3FileFactory = createG3FileFactory(dependencies, getG3FSEntryMock);
-
-      const g3file = await g3FileFactory("/path1/file1.txt");
-
-      assert.strictEqual(g3file.hasMultipleGistEntries(), false);
-    });
-
-    it("returns false with empty entries", async () => {
-      const g3file = await g3FileFactory("/path1/file1.txt");
-
-      assert.strictEqual(g3file.hasMultipleGistEntries(), false);
-    });
-  });
-
   describe("getFileIndex", () => {
     it("should increment file index on each call", async () => {
       const getG3FSEntryMock = async () => {

@@ -2,10 +2,7 @@
   "name": "g3",
   "version": "1.0.0",
   "description": "Gist Storage Service CLI. Just like AWS S3, G3 is lightweight and flexible CLI that provides an easy way to store and access data with the reliability of GitHub’s infrastructure.",
-  "keywords": [
-    "g3",
-    "github"
-  ],
+  "keywords": ["g3", "github"],
   "repository": {
     "type": "git",
     "url": "git@jegj_github:jegj/g3.git"

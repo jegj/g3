@@ -3,7 +3,7 @@ type OperationalErrorOptions = {
   [key: string]: unknown;
 };
 
-export interface OperationalError extends Error {
+interface OperationalError extends Error {
   name: string;
   isOperational: boolean;
   details?: string;

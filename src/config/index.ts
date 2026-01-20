@@ -10,12 +10,9 @@ export const DEFAULT_CONFIG_FILEPATH = path.join(
   HOME_DIR,
   ".config/g3/config.json",
 );
-export const DEFAULT_DATA_FILEPATH = path.join(
-  HOME_DIR,
-  ".local/share/g3/files/",
-);
+const DEFAULT_DATA_FILEPATH = path.join(HOME_DIR, ".local/share/g3/files/");
 
-export const G3ConfigSchema = z.object({
+const G3ConfigSchema = z.object({
   GITHUB_TOKEN: z.string().min(1, "GitHubToken is required"),
   AES_KEY: z.string().min(1, "AesKey is required"),
   DATA_FOLDER: z

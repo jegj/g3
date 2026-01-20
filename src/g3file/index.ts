@@ -31,10 +31,6 @@ export class G3File {
     };
   }
 
-  hasMultipleGistEntries(): boolean {
-    return this.filesystemDataEntry.entries.length > 1;
-  }
-
   get sortableFileName(): string {
     return `${(this.findex++).toString().padStart(ZERO_PAD, "0")}-${this.filename}`;
   }

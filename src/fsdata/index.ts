@@ -3,10 +3,6 @@ import { G3File, parseG3FileFactory } from "../g3file";
 import { G3Dependecies } from "../types";
 import { FilesystemDataEntry, GistDataEntry } from "./types";
 
-export const getFileContent = async (g3File: G3File): Promise<string> => {
-  return fs.readFile(g3File.filepath, { encoding: "utf-8" });
-};
-
 export const getG3FSEntry = async (
   g3file: G3File,
 ): Promise<FilesystemDataEntry> => {

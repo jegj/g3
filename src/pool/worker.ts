@@ -7,8 +7,8 @@ import { G3File } from "../g3file";
 import { createGistFactory } from "../gist";
 import { GistFilesRequest, GistResponse } from "../gist/types";
 import { deleteContentFromGistReponse } from "../gist/utils";
-import { G3Dependecies } from "../types";
 import { gitClone } from "../git";
+import { G3Dependecies } from "../types";
 
 export const filename = resolve(__filename);
 
