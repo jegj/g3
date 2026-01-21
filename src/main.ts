@@ -149,9 +149,10 @@ yargs(argv)
       await rm(argv);
     },
   })
-  .fail((_msg, err) => {
-    //FIXME: PASSING WRONG FLAGS CAUSE THIS BLOCK TO FAIL
-    if ("isOperational" in err && err.isOperational) {
+  .fail((msg, err) => {
+    if (!err) {
+      console.error(kleur.red(`Error: ${msg}`));
+    } else if ("isOperational" in err && err.isOperational) {
       console.error(kleur.red(`Error: ${err.message}`));
     } else {
       console.error(kleur.red("Fatal Error:"), err.message);
