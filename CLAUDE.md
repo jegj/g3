@@ -14,21 +14,26 @@ npm run dev                    # Run CLI in development mode (ts-node)
 npm run dev -- ls              # Run specific command
 npm run dev -- cp ./file.txt   # Test copy command
 
+# Build
+npm run build                  # Clean and compile TypeScript to dist/
+npm run clean                  # Remove dist folder
+
 # Testing
 npm test                       # Run all tests
 node --import tsx --test test/config/index.spec.ts  # Run single test file
 
 # Code Quality
-npm run lint                   # Lint with Biome (auto-fix)
+npm run lint                   # Check for lint errors
+npm run lint:fix               # Check and auto-fix lint errors
 npm run format                 # Format with Biome
-npm run check                  # Run both lint and format
+npm run check                  # Run both lint and format (with auto-fix)
 ```
 
 ## Architecture
 
 ### Factory Pattern for Dependencies
 All core operations use factory functions that receive `G3Dependecies` (containing `G3Config`). This enables dependency injection and testability:
-- `createGistFactory`, `deleteGistFactory`, `updateGistFactory` - Gist API operations
+- `createGistFactory`, `deleteGistFactory` - Gist API operations
 - `createG3FileFactory`, `parseG3FileFactory` - G3File creation/parsing
 - `getG3EntriesFactory` - File entry retrieval
 
