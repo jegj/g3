@@ -1,8 +1,11 @@
 {
   "name": "g3",
   "version": "1.0.0",
-  "description": "Gist Storage Service CLI. Just like AWS S3, G3 is lightweight and flexible CLI that provides an easy way to store and access data with the reliability of GitHub’s infrastructure.",
-  "keywords": ["g3", "github"],
+  "description": "Gist Storage Service CLI. Just like AWS S3, G3 is lightweight and flexible CLI that provides an easy way to store and access data with the reliability of GitHub's infrastructure.",
+  "keywords": [
+    "g3",
+    "github"
+  ],
   "repository": {
     "type": "git",
     "url": "git@jegj_github:jegj/g3.git"
@@ -10,12 +13,22 @@
   "license": "ISC",
   "author": "jegj57@gmail.com",
   "type": "commonjs",
-  "main": "src/main.ts",
+  "main": "dist/main.js",
+  "types": "dist/main.d.ts",
+  "bin": {
+    "g3": "dist/main.js"
+  },
+  "files": [
+    "dist"
+  ],
   "directories": {
     "doc": "docs"
   },
   "scripts": {
     "dev": "ts-node -r tsconfig-paths/register src/main.ts",
+    "build": "npm run clean && tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build",
     "test": "node --import tsx --test test/**/*.spec.ts",
     "format": "biome format --write",
     "lint": "biome lint --write",
@@ -35,6 +48,7 @@
     "globals": "16.5.0",
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
-    "tsx": "4.21.0"
+    "tsx": "4.21.0",
+    "typescript": "^5.9.3"
   }
 }
